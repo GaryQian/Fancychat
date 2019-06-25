@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter|lib/material.dart","flutter_gallery|lib/demo/transformations/transformations_demo_board.dart","flutter_gallery|lib/demo/transformations/transformations_demo_color_picker.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

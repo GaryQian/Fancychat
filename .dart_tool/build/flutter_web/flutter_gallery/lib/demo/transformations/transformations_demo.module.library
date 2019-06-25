@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter|lib/material.dart","flutter_gallery|lib/demo/transformations/transformations_demo_board.dart","flutter_gallery|lib/demo/transformations/transformations_demo_edit_board_point.dart","flutter_gallery|lib/demo/transformations/transformations_demo_gesture_transformable.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["ui"],"hasMain":false}

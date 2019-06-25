@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["process|lib/src/record_replay/can_run_manifest_entry.dart","process|lib/src/record_replay/manifest_entry.dart","process|lib/src/record_replay/run_manifest_entry.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["convert","io"],"hasMain":false}

@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["meta|lib/meta.dart","file|lib/src/backends/record_replay/codecs.dart","file|lib/src/backends/record_replay/events.dart","file|lib/src/backends/record_replay/recording_proxy_mixin.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async"],"hasMain":false}

@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["platform|lib/src/interface/local_platform.dart","platform|lib/src/interface/platform.dart","platform|lib/src/testing/fake_platform.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

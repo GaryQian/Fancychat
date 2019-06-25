@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter|lib/material.dart","flutter|lib/rendering.dart","flutter_test|lib/flutter_test.dart","flutter_gallery|lib/gallery/demos.dart","flutter_gallery|lib/gallery/app.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["math"],"hasMain":true}

@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter|lib/material.dart","vector_math|lib/vector_math_64.dart","flutter_gallery|lib/demo/transformations/transformations_demo_inertial_motion.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

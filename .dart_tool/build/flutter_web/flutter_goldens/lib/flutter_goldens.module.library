@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["file|lib/file.dart","file|lib/local.dart","flutter_test|lib/flutter_test.dart","meta|lib/meta.dart","flutter_goldens_client|lib/client.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async","typed_data"],"hasMain":true}
