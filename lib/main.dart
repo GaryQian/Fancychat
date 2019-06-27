@@ -87,48 +87,95 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              'ii',
-              style: TextStyle(fontSize: 70, decorationThickness: 1.1, decoration: TextDecoration.underline, decorationStyle: TextDecorationStyle.wavy),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              child: Container(
-                width: 310,
-                // height: 600,
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  border: Border.all(
-                    color: Colors.green,
-                    width: 14.0,
-                  ),
-                ),
-                child: RichText(
-                  text: TextSpan(
-                    text: 'Here is the gallery: ',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
+            Stack(
+              children: <Widget>[
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Transform.translate(
+                  // Align(
+                    offset: Offset(5, 5),
+                    // alignment: Alignment(1, 1),
+                    // left: 260,
+                    // top: 550,
+                    // width: 100,
+                    // height: 100,
+                    // right: 20,
+                    // bottom: 0,
+                    // child: Container(
+                    //   width: 100,
+                    //   height: 100,
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.blue,
+                    //     border: Border.all(
+                    //       color: Colors.blue,
+                    //       width: 14.0,
+                    //     ),
+                    //   ),
+                    // ), // Container
+                    child: CustomPaint(
+                      painter: ShapesPainter(),
+                      child: Container(height: 50, width: 50),
                     ),
-                    children: <InlineSpan>[
-                      WidgetSpan(
-                        child: ClipRect(
-                          child: SizedBox(
-                            width: 300,
-                            height: 400,
-                            child: GalleryApp()
-                          ),
-                        ),
-                      ),
-                      TextSpan(text: 'What do you think?')
-                    ],
+                    // child: RotationTransition(
+                    //   turns: AlwaysStoppedAnimation(90 / 360),
+                    //   child: Material(
+                    //     borderRadius: BorderRadius.all(
+                    //       Radius.circular(1.5),
+                    //     ),
+                    //     color: Colors.blue,
+                    //     child: Container(
+                    //       height: 10.0,
+                    //       width: 10.0,
+                    //     ),
+                    //   ),
+                    // ),
                   ),
                 ),
-              ),
-            ),
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(17)),
+                  child: Container(
+                    width: 300,
+                    // height: 600,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      border: Border.all(
+                        color: Colors.green,
+                        width: 14.0,
+                      ),
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Here is the gallery: ',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
+                        children: <InlineSpan>[
+                          WidgetSpan(
+                            child: MediaQuery.removePadding(
+                              context: context,
+                              removeBottom: true,
+                              removeTop: true,
+                              removeLeft: true,
+                              removeRight: true,
+                              child: ClipRect(
+                                child: SizedBox(
+                                  width: 300,
+                                  height: 400,
+                                  child: GalleryApp()
+                                ),
+                              ),
+                            ), 
+                          ), // WidgetSpan
+                          TextSpan(text: 'What do you think?')
+                        ],
+                      ), // TextSpan
+                    ), // RichText
+                  ), // Container
+                ), // ClipRRect
+              ],
+            ), // Stack
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.display1,
@@ -136,11 +183,34 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class ShapesPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint();
+    paint.color = Colors.green;
+    paint.style = PaintingStyle.fill;
+    Path path = Path();
+    path.moveTo(0, 0);
+    path.addPolygon(<Offset>[
+      Offset(0, 0),
+      Offset(40, 0),
+      Offset(50, 50),
+      Offset(0, 40),
+    ], true);
+    canvas.drawPath(path, paint);
+  }
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
+    return null;
   }
 }
