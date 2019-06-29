@@ -56,29 +56,6 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-class ShapesPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = Colors.green;
-    paint.style = PaintingStyle.fill;
-    Path path = Path();
-    path.moveTo(0, 0);
-    path.addPolygon(<Offset>[
-      Offset(0, 0),
-      Offset(40, 0),
-      Offset(50, 50),
-      Offset(0, 40),
-    ], true);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return null;
-  }
-}
-
 class AnimatedBubble extends AnimatedWidget {
   AnimatedBubble({Key key, Animation<double> animation})
       : super(key: key, listenable: animation);
@@ -87,23 +64,7 @@ class AnimatedBubble extends AnimatedWidget {
     final Animation<double> animation = listenable; 
     return Transform.scale(
           scale: animation.value,
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              // Positioned(
-              //   right: 0,
-              //   bottom: 0,
-              //   child: Transform.translate(
-              //     offset: Offset(5, 5),
-              //     child: CustomPaint(
-              //       painter: ShapesPainter(),
-              //       child: Container(
-              //           height: 50, width: 50),
-              //     ),
-              //   ),
-              // ),
+          child:
               ClipPath(
                 clipper: BubbleShaperClipper(curvePercentage:0.05),
                 child: Container(
@@ -142,15 +103,7 @@ class AnimatedBubble extends AnimatedWidget {
                     ), // TextSpan
                   ), // RichText
                 ), // Container
-              ), // ClipRRect
-            ],
-          ), // Stack
-          Text(
-            '',
-            style: Theme.of(context).textTheme.display1,
-          ),
-        ],
-      ),
+              ), // ClipRRect/ Stack
     );
   }
 }
