@@ -42,6 +42,9 @@ class _MyHomePageState extends State<MyHomePage>
       });
   }
 
+  double fontSize = 20;
+  final double startingFontSize = 20;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -49,13 +52,18 @@ class _MyHomePageState extends State<MyHomePage>
         child: Transform.scale(
           scale: animation.value,
           child: GestureDetector(
-            child: Bubble(),
+            child: Bubble(fontSize: fontSize,),
             onDoubleTap: () {
               if (animation.status == AnimationStatus.dismissed) {
                 controller.forward();
               } else if (animation.status == AnimationStatus.completed) {
                 controller.reverse();
               }
+            },
+            onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
+              setState(() {
+                fontSize = startingFontSize*scaleDetails.scale;
+              });
             },
           ),
         ),
@@ -71,6 +79,11 @@ class _MyHomePageState extends State<MyHomePage>
 }
 
 class Bubble extends StatelessWidget {
+
+  final double fontSize;
+
+  Bubble({this.fontSize});
+
   Widget build(BuildContext context) {
     return ClipPath(
       clipper: BubbleShaperClipper(curvePercentage: 0.05),
@@ -88,7 +101,7 @@ class Bubble extends StatelessWidget {
           text: TextSpan(
             text: 'Here is the gallery: ',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: fontSize,
               color: Colors.black,
             ),
             children: <InlineSpan>[
