@@ -36,28 +36,28 @@ class _MyHomePageState extends State<MyHomePage>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    animation = Tween<double>(begin: 1, end: 1.2).animate(controller);
+    animation = Tween<double>(begin: 1, end: 1.2).animate(controller)
+      ..addListener(() {
+        setState(() {});
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: Center(
-        child: GestureDetector(
-          child: AnimatedBubble(
-            animation: animation,
-          ),
-          onDoubleTap: () {
-            print('double tapped');
-            print(controller.status.toString());
-            setState(() {
+        child: Transform.scale(
+          scale: animation.value,
+          child: GestureDetector(
+            child: Bubble(),
+            onDoubleTap: () {
               if (animation.status == AnimationStatus.dismissed) {
                 controller.forward();
               } else if (animation.status == AnimationStatus.completed) {
                 controller.reverse();
               }
-            });
-          },
+            },
+          ),
         ),
       ),
     );
@@ -70,53 +70,46 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-class AnimatedBubble extends AnimatedWidget {
-  AnimatedBubble({Key key, Animation<double> animation})
-      : super(key: key, listenable: animation);
-
+class Bubble extends StatelessWidget {
   Widget build(BuildContext context) {
-    final Animation<double> animation = listenable;
-    return Transform.scale(
-      scale: animation.value,
-      child: ClipPath(
-        clipper: BubbleShaperClipper(curvePercentage: 0.05),
-        child: Container(
-          width: 300,
-          // height: 600,
-          decoration: BoxDecoration(
+    return ClipPath(
+      clipper: BubbleShaperClipper(curvePercentage: 0.05),
+      child: Container(
+        width: 300,
+        // height: 600,
+        decoration: BoxDecoration(
+          color: Colors.green,
+          border: Border.all(
             color: Colors.green,
-            border: Border.all(
-              color: Colors.green,
-              width: 14.0,
-            ),
+            width: 14.0,
           ),
-          child: RichText(
-            text: TextSpan(
-              text: 'Here is the gallery: ',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-              ),
-              children: <InlineSpan>[
-                WidgetSpan(
-                  child: MediaQuery.removePadding(
-                    context: context,
-                    removeBottom: true,
-                    removeTop: true,
-                    removeLeft: true,
-                    removeRight: true,
-                    child: ClipRect(
-                      child: SizedBox(
-                          width: 300, height: 400, child: GalleryApp()),
-                    ),
+        ),
+        child: RichText(
+          text: TextSpan(
+            text: 'Here is the gallery: ',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+            children: <InlineSpan>[
+              WidgetSpan(
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeBottom: true,
+                  removeTop: true,
+                  removeLeft: true,
+                  removeRight: true,
+                  child: ClipRect(
+                    child:
+                        SizedBox(width: 300, height: 400, child: GalleryApp()),
                   ),
-                ), // WidgetSpan
-                TextSpan(text: 'What do you think?')
-              ],
-            ), // TextSpan
-          ), // RichText
-        ), // Container// ClipRRect/ Stack
-      ),
+                ),
+              ), // WidgetSpan
+              TextSpan(text: 'What do you think?')
+            ],
+          ), // TextSpan
+        ), // RichText
+      ), // Container// ClipRRect/ Stack
     );
   }
 }
