@@ -42,8 +42,11 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return new Scaffold(
       body: Center(
-        child: AnimatedBubble(
-          animation: animation,
+        child: DoubleTapEnlarge(
+          child: AnimatedBubble(
+            animation: animation,
+          ),
+          scale: 1.2,
         ),
       ),
     );
@@ -79,15 +82,45 @@ class ShapesPainter extends CustomPainter {
   }
 }
 
+class DoubleTapEnlarge extends StatefulWidget {
+  final Widget child;
+  final double scale;
+
+  DoubleTapEnlarge({this.child, this.scale});
+
+  @override
+  State<StatefulWidget> createState() => DoubleTapEnlargeState();
+}
+
+class DoubleTapEnlargeState extends State<DoubleTapEnlarge> {
+  static final double default_scale = 1;
+  double scale = default_scale;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: Transform.scale(
+        scale: scale,
+        child: widget.child,
+      ),
+      onDoubleTap: () {
+        print('double tapped');
+        setState(() {
+          scale = scale == default_scale ?widget.scale : default_scale;
+        });
+      },
+    );
+  }
+}
+
 class AnimatedBubble extends AnimatedWidget {
   AnimatedBubble({Key key, Animation<double> animation})
       : super(key: key, listenable: animation);
 
   Widget build(BuildContext context) {
-    final Animation<double> animation = listenable; 
+    final Animation<double> animation = listenable;
     return Transform.scale(
-          scale: animation.value,
-          child: Column(
+      scale: animation.value,
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Stack(
@@ -99,8 +132,7 @@ class AnimatedBubble extends AnimatedWidget {
                   offset: Offset(5, 5),
                   child: CustomPaint(
                     painter: ShapesPainter(),
-                    child: Container(
-                        height: 50, width: 50),
+                    child: Container(height: 50, width: 50),
                   ),
                 ),
               ),
