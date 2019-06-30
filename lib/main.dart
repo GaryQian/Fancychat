@@ -56,29 +56,6 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-class ShapesPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = Colors.green;
-    paint.style = PaintingStyle.fill;
-    Path path = Path();
-    path.moveTo(0, 0);
-    path.addPolygon(<Offset>[
-      Offset(0, 0),
-      Offset(40, 0),
-      Offset(50, 50),
-      Offset(0, 40),
-    ], true);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return null;
-  }
-}
-
 class AnimatedBubble extends AnimatedWidget {
   AnimatedBubble({Key key, Animation<double> animation})
       : super(key: key, listenable: animation);
@@ -87,25 +64,9 @@ class AnimatedBubble extends AnimatedWidget {
     final Animation<double> animation = listenable; 
     return Transform.scale(
           scale: animation.value,
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Transform.translate(
-                  offset: Offset(5, 5),
-                  child: CustomPaint(
-                    painter: ShapesPainter(),
-                    child: Container(
-                        height: 50, width: 50),
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(17)),
+          child:
+              ClipPath(
+                clipper: BubbleShaperClipper(curvePercentage:0.05),
                 child: Container(
                   width: 300,
                   // height: 600,
@@ -142,15 +103,36 @@ class AnimatedBubble extends AnimatedWidget {
                     ), // TextSpan
                   ), // RichText
                 ), // Container
-              ), // ClipRRect
-            ],
-          ), // Stack
-          Text(
-            '',
-            style: Theme.of(context).textTheme.display1,
-          ),
-        ],
-      ),
+              ), // ClipRRect/ Stack
     );
+  }
+}
+
+
+class BubbleShaperClipper extends CustomClipper<Path> {
+  final curvePercentage;
+
+  BubbleShaperClipper({this.curvePercentage}) {
+    assert(this.curvePercentage < 0.5);
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(size.width*curvePercentage, 0);
+    path.lineTo(size.width*(1-curvePercentage), 0);
+    path.quadraticBezierTo(size.width, 0, size.width, size.height*curvePercentage);
+    path.lineTo(size.width, size.height);
+    path.lineTo(size.width*curvePercentage, size.height);
+    path.quadraticBezierTo(0, size.height, 0, size.height*(1-curvePercentage));
+    path.lineTo(0, size.height*curvePercentage);
+    path.quadraticBezierTo(0, 0, size.width*curvePercentage, 0);
+    path.close();
+    return path;
   }
 }
