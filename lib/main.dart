@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage>
         child: Transform.scale(
           scale: animation.value,
           child: GestureDetector(
-            child: Bubble(fontSize: fontSize,),
+            child: Bubble(fontSize: fontSize, minScale: 0.5, maxScale: 2.5),
             onDoubleTap: () {
               if (animation.status == AnimationStatus.dismissed) {
                 controller.forward();
@@ -78,55 +78,80 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-class Bubble extends StatelessWidget {
+class Bubble extends StatefulWidget {
 
   final double fontSize;
+  final double minScale;
+  final double maxScale;
 
-  Bubble({this.fontSize});
+  Bubble({
+    this.fontSize,
+    this.minScale,
+    this.maxScale,
+  });
+
+  @override
+  State<StatefulWidget> createState() {
+    return new BubbleState();
+  }
+}
+
+class BubbleState extends State<Bubble> {
+  double _fontScale = 1;
+  double _startScale = 1;
+
+  BubbleState();
 
   Widget build(BuildContext context) {
     return ClipPath(
       clipper: BubbleShaperClipper(radius: 15),
-      child: Container(
-        width: 300,
-        // height: 600,
-        decoration: BoxDecoration(
-          color: Colors.green,
-          border: Border.all(
+      child: GestureDetector(
+        onScaleStart: (scaleDetails) => setState(() => _startScale = _fontScale),
+        onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
+          setState(() {
+            _fontScale = (scaleDetails.scale * _startScale).clamp(widget.minScale, widget.maxScale);
+          });
+        },
+        child: Container(
+          width: 300,
+          // height: 600,
+          decoration: BoxDecoration(
             color: Colors.green,
-            width: 14.0,
-          ),
-        ),
-        child: RichText(
-          text: TextSpan(
-            text: 'Here is the gallery: ',
-            style: TextStyle(
-              fontSize: fontSize,
-              color: Colors.black,
+            border: Border.all(
+              color: Colors.green,
+              width: 14.0,
             ),
-            children: <InlineSpan>[
-              WidgetSpan(
-                child: ClipRect(
-                  child: SizedBox(
-                    width: 300,
-                    height: 400,
-                    child: GalleryApp()
+          ),
+          child: RichText(
+            text: TextSpan(
+              text: 'Here is the gallery: ',
+              style: TextStyle(
+                fontSize: widget.fontSize * _fontScale,
+                color: Colors.black,
+              ),
+              children: <InlineSpan>[
+                WidgetSpan(
+                  child: ClipRect(
+                    child: SizedBox(
+                      width: 300,
+                      height: 400,
+                      child: GalleryApp()
+                    ),
                   ),
-                ),
-              ), // WidgetSpan
-              TextSpan(text: 'What do you think?')
-            ],
-          ), // TextSpan
-        ), // RichText
-      ), // ClipPath
+                ), // WidgetSpan
+                TextSpan(text: 'What do you think?')
+              ],
+              // gestureRecognizer: GestureRecognizer(),
+            ), // TextSpan
+          ), // RichText
+        ), // Container
+      ), // GestureDetector
     );
   }
 }
 
 class BubbleShaperClipper extends CustomClipper<Path> {
-  BubbleShaperClipper({this.radius}) {
-    // assert(this.radius < 0.5);
-  }
+  BubbleShaperClipper({this.radius}) : assert(radius >= 0);
 
   final double radius;
 
