@@ -1,1 +1,0 @@
-{"isEntrypoint":false,"deps":["file|lib/file.dart","file|lib/src/backends/record_replay/codecs.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

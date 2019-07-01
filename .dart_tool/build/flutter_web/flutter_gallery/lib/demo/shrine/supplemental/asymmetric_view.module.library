@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["flutter|lib/material.dart","flutter_gallery|lib/demo/shrine/model/product.dart","flutter_gallery|lib/demo/shrine/supplemental/product_columns.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

@@ -192,6 +192,9 @@ flutter:
     - packages/shrine_images/35-0.jpg
     - packages/shrine_images/36-0.jpg
     - packages/shrine_images/37-0.jpg
+    - assets/oh_yeah.png
+    - assets/tears.gif
+    - assets/devil.gif
 
   fonts:
     - family: Raleway

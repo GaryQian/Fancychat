@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["file|lib/src/backends/record_replay/errors.dart","file|lib/src/backends/record_replay/events.dart","file|lib/src/backends/record_replay/recording.dart","file|lib/src/backends/record_replay/recording_file_system.dart","file|lib/src/backends/record_replay/replay_file_system.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

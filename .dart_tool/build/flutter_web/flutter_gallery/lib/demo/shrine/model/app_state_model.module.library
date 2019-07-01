@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["scoped_model|lib/scoped_model.dart","flutter_gallery|lib/demo/shrine/model/product.dart","flutter_gallery|lib/demo/shrine/model/products_repository.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

@@ -1,1 +1,0 @@
-{"isEntrypoint":false,"deps":["meta|lib/meta.dart","file|lib/src/backends/record_replay/codecs.dart","file|lib/src/backends/record_replay/common.dart","file|lib/src/backends/record_replay/errors.dart","file|lib/src/backends/record_replay/proxy.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["convert"],"hasMain":false}

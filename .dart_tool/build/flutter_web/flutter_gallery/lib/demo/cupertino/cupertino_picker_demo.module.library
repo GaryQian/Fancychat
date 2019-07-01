@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["flutter|lib/cupertino.dart","intl|lib/intl.dart","flutter_gallery|lib/gallery/demo.dart","flutter_gallery|lib/demo/cupertino/cupertino_navigation_demo.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

@@ -25,56 +25,15 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
-  Animation<double> animation;
-  AnimationController controller;
-
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-    animation = Tween<double>(begin: 1, end: 1.2).animate(controller)
-      ..addListener(() {
-        setState(() {});
-      });
-  }
-
-  double fontSize = 20;
-  final double startingFontSize = 20;
+class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: Center(
-        child: Transform.scale(
-          scale: animation.value,
-          child: GestureDetector(
-            child: Bubble(fontSize: fontSize, minScale: 0.5, maxScale: 2.5),
-            onDoubleTap: () {
-              if (animation.status == AnimationStatus.dismissed) {
-                controller.forward();
-              } else if (animation.status == AnimationStatus.completed) {
-                controller.reverse();
-              }
-            },
-            onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
-              setState(() {
-                fontSize = startingFontSize*scaleDetails.scale;
-              });
-            },
-          ),
-        ),
+        child: Bubble(fontSize: 20, minScale: 0.5, maxScale: 2.5),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 }
 
@@ -96,57 +55,106 @@ class Bubble extends StatefulWidget {
   }
 }
 
-class BubbleState extends State<Bubble> {
+class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
+  BubbleState();
+
   double _fontScale = 1;
   double _startScale = 1;
 
-  BubbleState();
+  Animation<double> animation;
+  AnimationController controller;
+
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    animation = Tween<double>(begin: 1, end: 1.2).animate(controller)
+      ..addListener(() {
+        setState(() {});
+      }
+    );
+  }
 
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: BubbleShaperClipper(radius: 15),
-      child: GestureDetector(
-        onScaleStart: (scaleDetails) => setState(() => _startScale = _fontScale),
-        onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
-          setState(() {
-            _fontScale = (scaleDetails.scale * _startScale).clamp(widget.minScale, widget.maxScale);
-          });
-        },
-        child: Container(
-          width: 300,
-          // height: 600,
-          decoration: BoxDecoration(
-            color: Colors.green,
-            border: Border.all(
-              color: Colors.green,
-              width: 14.0,
-            ),
-          ),
-          child: RichText(
-            text: TextSpan(
-              text: 'Here is the gallery: ',
-              style: TextStyle(
-                fontSize: widget.fontSize * _fontScale,
-                color: Colors.black,
+    return GestureDetector(
+      onScaleStart: (scaleDetails) => setState(() => _startScale = _fontScale),
+      onDoubleTap: () {
+        if (animation.status == AnimationStatus.dismissed) {
+          controller.forward();
+        } else if (animation.status == AnimationStatus.completed) {
+          controller.reverse();
+        }
+      },
+      onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
+        setState(() {
+          _fontScale = (scaleDetails.scale * _startScale).clamp(widget.minScale, widget.maxScale);
+        });
+      },
+      child: Transform.scale(
+        scale: animation.value,
+        child: CustomPaint(
+          painter: BubbleShadowPainter(radius: 15),
+          child: ClipPath(
+            clipper: BubbleShaperClipper(radius: 15),
+            child: Container(
+              width: 300,
+              padding: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.green[400], Colors.green[600]],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomLeft,
+                ),
               ),
-              children: <InlineSpan>[
-                WidgetSpan(
-                  child: ClipRect(
-                    child: SizedBox(
-                      width: 300,
-                      height: 400,
-                      child: GalleryApp()
-                    ),
+              child: RichText(
+                text: TextSpan(
+                  text: 'Here is the gallery: ',
+                  style: TextStyle(
+                    fontSize: widget.fontSize * _fontScale,
+                    color: Colors.black,
                   ),
-                ), // WidgetSpan
-                TextSpan(text: 'What do you think?')
-              ],
-              // gestureRecognizer: GestureRecognizer(),
-            ), // TextSpan
-          ), // RichText
-        ), // Container
-      ), // GestureDetector
+                  children: <InlineSpan>[
+                    // WidgetSpan(
+                    //   child: ClipRect(
+                    //     child: SizedBox(
+                    //       width: 300,
+                    //       height: 400,
+                    //       child: GalleryApp()
+                    //     ),
+                    //   ),
+                    // ), // WidgetSpan
+                    WidgetSpan(
+                      child: Image.asset(
+                        'assets/tears.gif',
+                        width: 25 * _fontScale,
+                        height: 25 * _fontScale,
+                      ),
+                    ), // WidgetSpan
+                    WidgetSpan(
+                      child: Image.asset(
+                        'assets/devil.gif',
+                        width: 25 * _fontScale,
+                        height: 25 * _fontScale,
+                      ),
+                    ), // WidgetSpan
+                    TextSpan(text: 'What do you think?'),
+                  ],
+                  // gestureRecognizer: GestureRecognizer(),
+                ), // TextSpan
+              ), // RichText
+            ), // Container
+          ), // ClipPath
+        ), // CustomPaint
+      ), // Transform
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }
 
@@ -177,3 +185,33 @@ class BubbleShaperClipper extends CustomClipper<Path> {
     return path;
   }
 }
+
+class BubbleShadowPainter extends CustomPainter {
+
+  BubbleShadowPainter({this.radius}) : assert(radius >= 0);
+
+  final double radius;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Path path = Path();
+    path.moveTo(radius, 0);
+    path.lineTo(size.width - radius, 0);
+    path.quadraticBezierTo(
+        size.width, 0, size.width, radius);
+    path.lineTo(size.width, size.height);
+    path.lineTo(radius, size.height);
+    path.quadraticBezierTo(
+        0, size.height, 0, size.height - radius);
+    path.lineTo(0, radius);
+    path.quadraticBezierTo(0, 0, radius, 0);
+    path.close();
+    canvas.drawShadow(path, Colors.black87, 5.0, false);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+

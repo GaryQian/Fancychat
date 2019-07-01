@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["flutter|lib/gestures.dart","flutter|lib/foundation.dart","flutter|lib/material.dart","url_launcher|lib/url_launcher.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

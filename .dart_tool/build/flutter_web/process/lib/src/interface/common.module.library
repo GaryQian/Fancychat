@@ -1,1 +1,0 @@
-{"isEntrypoint":false,"deps":["file|lib/file.dart","file|lib/local.dart","path|lib/path.dart","platform|lib/platform.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

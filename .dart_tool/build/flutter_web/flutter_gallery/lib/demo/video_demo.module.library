@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["connectivity|lib/connectivity.dart","flutter|lib/material.dart","video_player|lib/video_player.dart","device_info|lib/device_info.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async","io"],"hasMain":false}

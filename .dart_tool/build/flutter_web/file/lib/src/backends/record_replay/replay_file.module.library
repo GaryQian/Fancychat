@@ -1,1 +1,0 @@
-{"isEntrypoint":false,"deps":["file|lib/file.dart","file|lib/src/backends/record_replay/codecs.dart","file|lib/src/backends/record_replay/replay_file_system.dart","file|lib/src/backends/record_replay/replay_file_system_entity.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async","convert","typed_data"],"hasMain":false}

@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["flutter|lib/material.dart","flutter_gallery|lib/gallery/about.dart","flutter_gallery|lib/gallery/scales.dart","flutter_gallery|lib/gallery/themes.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

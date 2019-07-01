@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["flutter|lib/cupertino.dart","flutter_gallery|lib/gallery/demo.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async","math"],"hasMain":false}

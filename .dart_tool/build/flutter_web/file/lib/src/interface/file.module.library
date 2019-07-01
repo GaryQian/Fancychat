@@ -1,1 +1,0 @@
-{"isEntrypoint":false,"deps":["file|lib/src/interface/file_system_entity.dart","file|lib/src/io.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async","convert"],"hasMain":false}
