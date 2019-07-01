@@ -97,11 +97,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_driver:
-    dependency: "direct dev"
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_gallery_assets:
     dependency: "direct main"
     description:
@@ -109,23 +104,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.9+2"
-  flutter_goldens:
-    dependency: "direct dev"
-    description: flutter
-    source: sdk
-    version: "0.0.0"
-  flutter_goldens_client:
-    dependency: transitive
-    description:
-      path: "../../flutter/packages/flutter_goldens_client"
-      relative: true
-    source: path
-    version: "0.0.0"
-  flutter_test:
-    dependency: "direct dev"
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   front_end:
     dependency: "direct dev"
     description:
@@ -133,11 +111,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.18"
-  fuchsia_remote_debug_protocol:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   glob:
     dependency: "direct dev"
     description:

@@ -86,7 +86,7 @@ class Bubble extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: BubbleShaperClipper(curvePercentage: 0.05),
+      clipper: BubbleShaperClipper(radius: 15),
       child: Container(
         width: 300,
         // height: 600,
@@ -106,15 +106,11 @@ class Bubble extends StatelessWidget {
             ),
             children: <InlineSpan>[
               WidgetSpan(
-                child: MediaQuery.removePadding(
-                  context: context,
-                  removeBottom: true,
-                  removeTop: true,
-                  removeLeft: true,
-                  removeRight: true,
-                  child: ClipRect(
-                    child:
-                        SizedBox(width: 300, height: 400, child: GalleryApp()),
+                child: ClipRect(
+                  child: SizedBox(
+                    width: 300,
+                    height: 400,
+                    child: GalleryApp()
                   ),
                 ),
               ), // WidgetSpan
@@ -122,17 +118,17 @@ class Bubble extends StatelessWidget {
             ],
           ), // TextSpan
         ), // RichText
-      ), // Container// ClipRRect/ Stack
+      ), // ClipPath
     );
   }
 }
 
 class BubbleShaperClipper extends CustomClipper<Path> {
-  final curvePercentage;
-
-  BubbleShaperClipper({this.curvePercentage}) {
-    assert(this.curvePercentage < 0.5);
+  BubbleShaperClipper({this.radius}) {
+    // assert(this.radius < 0.5);
   }
+
+  final double radius;
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
@@ -142,16 +138,16 @@ class BubbleShaperClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
-    path.moveTo(size.width * curvePercentage, 0);
-    path.lineTo(size.width * (1 - curvePercentage), 0);
+    path.moveTo(radius, 0);
+    path.lineTo(size.width - radius, 0);
     path.quadraticBezierTo(
-        size.width, 0, size.width, size.height * curvePercentage);
+        size.width, 0, size.width, radius);
     path.lineTo(size.width, size.height);
-    path.lineTo(size.width * curvePercentage, size.height);
+    path.lineTo(radius, size.height);
     path.quadraticBezierTo(
-        0, size.height, 0, size.height * (1 - curvePercentage));
-    path.lineTo(0, size.height * curvePercentage);
-    path.quadraticBezierTo(0, 0, size.width * curvePercentage, 0);
+        0, size.height, 0, size.height - radius);
+    path.lineTo(0, radius);
+    path.quadraticBezierTo(0, 0, radius, 0);
     path.close();
     return path;
   }
