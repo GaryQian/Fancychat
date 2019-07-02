@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: Center(
         child: ListView.separated(
-          padding: const EdgeInsets.only(left: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20),
           itemCount: 25,
           itemBuilder: (BuildContext context, int index) {
             bool isLeft = index % 2 == 0;
@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
               [Colors.lightGreenAccent[700], Colors.green[600]];
             return Row(
               children: [
-                SizedBox(width: !isLeft ? 50 : 0),
+                Spacer(flex: !isLeft ? 100 : 1),
                 Bubble(
                   fontSize: 20,
                   minScale: 0.5,
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   gradientColors: colors,
                   isLeft: isLeft,
                 ),
-                SizedBox(width: isLeft ? 50 : 0),
+                Spacer(flex: isLeft ? 100 : 1),
               ]
             );
           },
@@ -121,6 +121,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       },
       child: Transform.scale(
         scale: animation.value,
+        alignment: Alignment(widget.isLeft ? -1 : 1, 0.5),
         child: CustomPaint(
           painter: BubbleShadowPainter(isLeft: widget.isLeft),
           child: ClipPath(
