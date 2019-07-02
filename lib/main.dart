@@ -32,13 +32,26 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: Center(
         child: ListView.separated(
-          padding: const EdgeInsets.all(50.0),
+          padding: const EdgeInsets.only(left: 20),
           itemCount: 25,
           itemBuilder: (BuildContext context, int index) {
-            List<Color> colors = index % 2 == 0 ?
+            bool isLeft = index % 2 == 0;
+            List<Color> colors = isLeft ?
               [Colors.grey[200], Colors.grey[350]] :
               [Colors.lightGreenAccent[700], Colors.green[600]];
-            return Bubble(fontSize: 20, minScale: 0.5, maxScale: 2.5, gradientColors: colors, isLeft: index % 2 == 0);
+            return Row(
+              children: [
+                SizedBox(width: !isLeft ? 50 : 0),
+                Bubble(
+                  fontSize: 20,
+                  minScale: 0.5,
+                  maxScale: 2.5,
+                  gradientColors: colors,
+                  isLeft: isLeft,
+                ),
+                SizedBox(width: isLeft ? 50 : 0),
+              ]
+            );
           },
           separatorBuilder: (BuildContext context, int index) => SizedBox(height: 35),
         ),
@@ -182,16 +195,20 @@ Path buildPath(Size size, double radius, bool isLeft) {
       path.lineTo(size.width, size.height - radius);
       path.quadraticBezierTo(
         size.width, size.height, size.width - radius, size.height);
+      path.lineTo(0, size.height);
     } else {
       path.lineTo(size.width, size.height);
-    }
-    if (!isLeft) {
       path.lineTo(radius, size.height);
       path.quadraticBezierTo(
         0, size.height, 0, size.height - radius);
-    } else {
-      path.lineTo(0, size.height);
     }
+    // if (!isLeft) {
+    //   path.lineTo(radius, size.height);
+    //   path.quadraticBezierTo(
+    //     0, size.height, 0, size.height - radius);
+    // } else {
+    //   path.lineTo(0, size.height);
+    // }
     path.lineTo(0, radius);
     path.quadraticBezierTo(0, 0, radius, 0);
     path.close();
