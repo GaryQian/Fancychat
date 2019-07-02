@@ -31,23 +31,37 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       body: Center(
-        child: Bubble(fontSize: 20, minScale: 0.5, maxScale: 2.5),
+        child: ListView.separated(
+          padding: const EdgeInsets.all(50.0),
+          itemCount: 25,
+          itemBuilder: (BuildContext context, int index) {
+            List<Color> colors = index % 2 == 0 ?
+              [Colors.grey[200], Colors.grey[350]] :
+              [Colors.lightGreenAccent[700], Colors.green[600]];
+            return Bubble(fontSize: 20, minScale: 0.5, maxScale: 2.5, gradientColors: colors, isLeft: index % 2 == 0);
+          },
+          separatorBuilder: (BuildContext context, int index) => SizedBox(height: 35),
+        ),
       ),
     );
   }
 }
 
 class Bubble extends StatefulWidget {
+  Bubble({
+    this.fontSize,
+    this.minScale,
+    this.maxScale,
+    this.gradientColors,
+    this.isLeft,
+  });
 
   final double fontSize;
   final double minScale;
   final double maxScale;
 
-  Bubble({
-    this.fontSize,
-    this.minScale,
-    this.maxScale,
-  });
+  final List<Color> gradientColors;
+  final bool isLeft;
 
   @override
   State<StatefulWidget> createState() {
@@ -95,15 +109,15 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       child: Transform.scale(
         scale: animation.value,
         child: CustomPaint(
-          painter: BubbleShadowPainter(radius: 15),
+          painter: BubbleShadowPainter(isLeft: widget.isLeft),
           child: ClipPath(
-            clipper: BubbleShaperClipper(radius: 15),
+            clipper: BubbleShaperClipper(isLeft: widget.isLeft),
             child: Container(
               width: 300,
               padding: EdgeInsets.all(15),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.green[400], Colors.green[600]],
+                  colors: widget.gradientColors,
                   begin: Alignment.topLeft,
                   end: Alignment.bottomLeft,
                 ),
@@ -158,10 +172,37 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
   }
 }
 
-class BubbleShaperClipper extends CustomClipper<Path> {
-  BubbleShaperClipper({this.radius}) : assert(radius >= 0);
+Path buildPath(Size size, double radius, bool isLeft) {
+    Path path = Path();
+    path.moveTo(radius, 0);
+    path.lineTo(size.width - radius, 0);
+    path.quadraticBezierTo(
+        size.width, 0, size.width, radius);
+    if (isLeft) {
+      path.lineTo(size.width, size.height - radius);
+      path.quadraticBezierTo(
+        size.width, size.height, size.width - radius, size.height);
+    } else {
+      path.lineTo(size.width, size.height);
+    }
+    if (!isLeft) {
+      path.lineTo(radius, size.height);
+      path.quadraticBezierTo(
+        0, size.height, 0, size.height - radius);
+    } else {
+      path.lineTo(0, size.height);
+    }
+    path.lineTo(0, radius);
+    path.quadraticBezierTo(0, 0, radius, 0);
+    path.close();
 
-  final double radius;
+    return path;
+}
+
+class BubbleShaperClipper extends CustomClipper<Path> {
+  BubbleShaperClipper({this.isLeft});
+
+  final bool isLeft;
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
@@ -170,43 +211,20 @@ class BubbleShaperClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    Path path = Path();
-    path.moveTo(radius, 0);
-    path.lineTo(size.width - radius, 0);
-    path.quadraticBezierTo(
-        size.width, 0, size.width, radius);
-    path.lineTo(size.width, size.height);
-    path.lineTo(radius, size.height);
-    path.quadraticBezierTo(
-        0, size.height, 0, size.height - radius);
-    path.lineTo(0, radius);
-    path.quadraticBezierTo(0, 0, radius, 0);
-    path.close();
-    return path;
+    return buildPath(size, 15, isLeft);
   }
 }
 
 class BubbleShadowPainter extends CustomPainter {
 
-  BubbleShadowPainter({this.radius}) : assert(radius >= 0);
+  BubbleShadowPainter({this.isLeft});
 
-  final double radius;
+  final bool isLeft;
 
   @override
   void paint(Canvas canvas, Size size) {
-    Path path = Path();
-    path.moveTo(radius, 0);
-    path.lineTo(size.width - radius, 0);
-    path.quadraticBezierTo(
-        size.width, 0, size.width, radius);
-    path.lineTo(size.width, size.height);
-    path.lineTo(radius, size.height);
-    path.quadraticBezierTo(
-        0, size.height, 0, size.height - radius);
-    path.lineTo(0, radius);
-    path.quadraticBezierTo(0, 0, radius, 0);
-    path.close();
-    canvas.drawShadow(path, Colors.black87, 5.0, false);
+    // canvas.drawColor(Colors.transparent, BlendMode.src);
+    canvas.drawShadow(buildPath(size, 15, isLeft), Colors.black87, 5.0, false);
   }
 
   @override
