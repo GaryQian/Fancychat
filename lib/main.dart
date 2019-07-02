@@ -43,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Spacer(flex: !isLeft ? 100 : 1),
                 Bubble(
+                  width: 300,
                   fontSize: 20,
                   minScale: 0.5,
                   maxScale: 2.5,
@@ -62,12 +63,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class Bubble extends StatefulWidget {
   Bubble({
+    this.width,
     this.fontSize,
     this.minScale,
     this.maxScale,
     this.gradientColors,
     this.isLeft,
   });
+
+  final double width;
 
   final double fontSize;
   final double minScale;
@@ -127,7 +131,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
           child: ClipPath(
             clipper: BubbleShaperClipper(isLeft: widget.isLeft),
             child: Container(
-              width: 300,
+              width: widget.width,
               padding: EdgeInsets.all(15),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
