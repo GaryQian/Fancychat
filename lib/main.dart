@@ -102,7 +102,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    animation = Tween<double>(begin: 1, end: 1.2).animate(controller)
+    animation = Tween<double>(begin: 1, end: 1.15).animate(controller)
       ..addListener(() {
         setState(() {});
       }
@@ -172,10 +172,23 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
                         height: 25 * _fontScale,
                       ),
                     ), // WidgetSpan
-                    TextSpan(text: 'What do you think?'),
+                    TextSpan(
+                      text: 'What do you think? These words are really small, but the strut keeps them the same distance apart.',
+                      style: TextStyle(
+                        fontSize: widget.fontSize * _fontScale / 2,
+                        color: Colors.black,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'What do you think?',
+                    ),
                   ],
                   // gestureRecognizer: GestureRecognizer(),
                 ), // TextSpan
+                strutStyle: StrutStyle(
+                  fontSize: widget.fontSize * _fontScale,
+                  height: 1.5,
+                ),
               ), // RichText
             ), // Container
           ), // ClipPath
