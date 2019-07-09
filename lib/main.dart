@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import 'gallery/app.dart';
+import 'bubble_helpers.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -188,37 +189,6 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
     controller.dispose();
     super.dispose();
   }
-}
-
-Path buildPath(Size size, double radius, bool isLeft) {
-    Path path = Path();
-    path.moveTo(radius, 0);
-    path.lineTo(size.width - radius, 0);
-    path.quadraticBezierTo(
-        size.width, 0, size.width, radius);
-    if (isLeft) {
-      path.lineTo(size.width, size.height - radius);
-      path.quadraticBezierTo(
-        size.width, size.height, size.width - radius, size.height);
-      path.lineTo(0, size.height);
-    } else {
-      path.lineTo(size.width, size.height);
-      path.lineTo(radius, size.height);
-      path.quadraticBezierTo(
-        0, size.height, 0, size.height - radius);
-    }
-    // if (!isLeft) {
-    //   path.lineTo(radius, size.height);
-    //   path.quadraticBezierTo(
-    //     0, size.height, 0, size.height - radius);
-    // } else {
-    //   path.lineTo(0, size.height);
-    // }
-    path.lineTo(0, radius);
-    path.quadraticBezierTo(0, 0, radius, 0);
-    path.close();
-
-    return path;
 }
 
 class BubbleShaperClipper extends CustomClipper<Path> {
