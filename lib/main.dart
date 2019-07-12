@@ -112,13 +112,6 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return GestureDetector(
       onScaleStart: (scaleDetails) => setState(() => _startScale = _fontScale),
-      onDoubleTap: () {
-        if (animation.status == AnimationStatus.dismissed) {
-          controller.forward();
-        } else if (animation.status == AnimationStatus.completed) {
-          controller.reverse();
-        }
-      },
       onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
         setState(() {
           _fontScale = (scaleDetails.scale * _startScale).clamp(widget.minScale, widget.maxScale);
