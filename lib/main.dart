@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: Center(
         child: ListView.separated(
-          padding: const EdgeInsets.only(left: 20, right: 20),
+          padding: const EdgeInsets.all(20),
           itemCount: 25,
           itemBuilder: (BuildContext context, int index) {
             bool isLeft = index % 2 == 0;
@@ -136,7 +136,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
               ),
               child: RichText(
                 text: TextSpan(
-                  text: 'Here is the gallery: ',
+                  text: '看！Flitter Gallery APP！',
                   style: TextStyle(
                     fontSize: widget.fontSize * _fontScale,
                     color: Colors.black,
@@ -166,14 +166,14 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
                       ),
                     ), // WidgetSpan
                     TextSpan(
-                      text: 'What do you think? These words are really small, but the strut keeps them the same distance apart.',
+                      text: 'Strut让小字体的文字有更多的空间。',
                       style: TextStyle(
                         fontSize: widget.fontSize * _fontScale / 2,
                         color: Colors.black,
                       ),
                     ),
                     TextSpan(
-                      text: 'What do you think?',
+                      text: '您觉得如何？',
                     ),
                   ],
                   // gestureRecognizer: GestureRecognizer(),
