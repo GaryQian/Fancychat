@@ -102,8 +102,8 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
   TextSpan _textSpan;
   List<InlineSpan> _spans;
   String _text;
-  TextEditingController _controller;
-  StrutStyle  _strutStyle;
+  StrutStyle _strutStyle;
+  int _textFieldSpanIndex;
 
   void initState() {
     super.initState();
@@ -118,8 +118,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
   }
 
   void _tapToAddTextField(Offset offset, BuildContext context) {
-    final RenderBox renderBox =
-        _richTextKey.currentContext.findRenderObject();
+    final RenderBox renderBox = _richTextKey.currentContext.findRenderObject();
     final Size size = renderBox.size;
     _textPainter.textDirection = TextDirection.ltr;
     _textPainter.setPlaceholderDimensions(<PlaceholderDimensions>[
@@ -139,26 +138,24 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       String before = _textSpan.text.substring(0, position.offset);
       String after = _textSpan.text.substring(position.offset);
       print('before $before after $after');
-      _spans.insert(0, TextSpan(
+      TextSpan newfirstSpan = TextSpan(
         text: after,
-        style: TextStyle(
-          fontSize: widget.fontSize * _fontScale / 2,
-          color: Colors.black,
-        ),
-      ),);
-      _textSpan = _buildTextSpan(before, _spans);
+        style: _textSpan.style,
+      );
+      _spans.insert(0, newfirstSpan);
+      _text = before;
     } else {
       int totalCharacterIndex = _textSpan.text.length;
       for (InlineSpan span in _spans) {
         int characterIndexBeforeCounting = totalCharacterIndex;
         if (span is WidgetSpan) {
-          totalCharacterIndex ++;
+          totalCharacterIndex++;
         } else {
           TextSpan textSpan = span as TextSpan;
           totalCharacterIndex += textSpan.text.length;
         }
         if (position.offset > totalCharacterIndex) {
-          spanIndex ++;
+          spanIndex++;
           continue;
         }
         characterIndex = position.offset - characterIndexBeforeCounting;
@@ -166,36 +163,79 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
     }
     InlineSpan selectedSpan = _spans[spanIndex];
     WidgetSpan newSpan = WidgetSpan(
-          child: Container(child:TextField(controller: _controller, style: selectedSpan.style, ), width: 100)
-        );
+        child: Container(
+            child: TextField(
+              style: selectedSpan.style,
+              onSubmitted: (String value) {
+                setState(() {
+                  _reconstructSpans(value);
+                });
+              },
+            ),
+            width: 100));
     if (characterIndex == 0 || selectedSpan is WidgetSpan) {
       // no need to split
       _spans.insert(spanIndex, newSpan);
+      _textFieldSpanIndex = 0;
     } else {
       TextSpan wholeSpan = selectedSpan as TextSpan;
-      TextSpan before = TextSpan(text: wholeSpan.text.substring(0, characterIndex), style:wholeSpan.style);
-      TextSpan after = TextSpan(text: wholeSpan.text.substring(characterIndex), style:wholeSpan.style);
-      _spans.replaceRange(spanIndex, spanIndex+1, [before, newSpan, after]);
+      TextSpan before = TextSpan(
+          text: wholeSpan.text.substring(0, characterIndex),
+          style: wholeSpan.style);
+      TextSpan after = TextSpan(
+          text: wholeSpan.text.substring(characterIndex),
+          style: wholeSpan.style);
+      _spans.replaceRange(spanIndex, spanIndex + 1, [before, newSpan, after]);
+      _textFieldSpanIndex = spanIndex + 1;
     }
 
     print(_spans);
   }
 
+  void _reconstructSpans(String stringAdditions) {
+    TextStyle lastStyle = _textSpan.style;
+    InlineSpan lastSpan;
+    List<InlineSpan> newSpans;
+    int index  = 0;
+    for (InlineSpan span in _spans) {
+      if (span is TextSpan) {
+        if (span.style == lastStyle) {
+          if (lastSpan == null) {
+            _text += span.text;
+          } else if (lastSpan is TextSpan) {
+            lastSpan = _combineTextSpan(lastSpan.text, span.text, span.style);
+          } else if (index-1 == _textFieldSpanIndex) {
+            lastSpan = _combineTextSpan(stringAdditions, span.text, span.style);
+          } else {
+            newSpans.add(span);
+          }
+        }
+      } else {
+        newSpans.add(span);
+      }
+      index ++;
+    }
+    _spans = newSpans;
+  }
+
+  TextSpan _combineTextSpan(String a, String b, TextStyle style) {
+    return TextSpan(text: a + b, style: style);
+  }
+
   TextSpan _buildTextSpan(String text, List<InlineSpan> spans) {
     return TextSpan(
-      text: text,
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: widget.fontSize * _fontScale,
-      ),
-      children: spans
-    );
+        text: text,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: widget.fontSize * _fontScale,
+        ),
+        children: spans);
   }
 
   Widget _createAndCacheRichText() {
     if (_text == null || _spans == null) {
-          _text = '看！Flutter Gallery APP！';
-    _spans = <InlineSpan>[
+      _text = '看！Flutter Gallery APP！';
+      _spans = <InlineSpan>[
         // WidgetSpan(
         //   child: ClipRect(
         //     child: SizedBox(
@@ -230,12 +270,11 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
           text: '您觉得如何？',
         ),
       ];
-    _textSpan = _buildTextSpan(_text, _spans);
-    _strutStyle =
-        StrutStyle(fontSize: widget.fontSize * _fontScale, height: 1.1);
-    _textPainter = TextPainter(text: _textSpan, strutStyle: _strutStyle);
+      _strutStyle =
+          StrutStyle(fontSize: widget.fontSize * _fontScale, height: 1.1);
+      _textPainter = TextPainter(text: _textSpan, strutStyle: _strutStyle);
     }
-
+    _textSpan = _buildTextSpan(_text, _spans);
     _richText =
         RichText(key: _richTextKey, text: _textSpan, strutStyle: _strutStyle);
     return _richText;
@@ -252,10 +291,10 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       },
       onTapUp: (TapUpDetails details) {
         final RenderBox renderBox =
-        _richTextKey.currentContext.findRenderObject();
-        setState((){
+            _richTextKey.currentContext.findRenderObject();
+        setState(() {
           _tapToAddTextField(
-            renderBox.globalToLocal(details.globalPosition), context);
+              renderBox.globalToLocal(details.globalPosition), context);
         });
       },
       child: Transform.scale(
