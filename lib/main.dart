@@ -33,10 +33,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: Center(
         child: ListView.separated(
-          padding: const EdgeInsets.all(20),
           itemCount: 25,
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
           itemBuilder: (BuildContext context, int index) {
-            bool isLeft = index % 2 == 0;
+            bool isLeft = index % 2 == 1;
             List<Color> colors = isLeft ?
               [Colors.grey[200], Colors.grey[350]] :
               [Colors.lightGreenAccent[700], Colors.green[600]];
@@ -134,9 +134,9 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
                   end: Alignment.bottomLeft,
                 ),
               ),
-              child: RichText(
-                text: TextSpan(
-                  text: '看！Flitter Gallery APP！',
+              child: Text.rich(
+                TextSpan(
+                  text: '看！Flutter Gallery APP！',
                   style: TextStyle(
                     fontSize: widget.fontSize * _fontScale,
                     color: Colors.black,
@@ -176,11 +176,10 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
                       text: '您觉得如何？',
                     ),
                   ],
-                  // gestureRecognizer: GestureRecognizer(),
                 ), // TextSpan
                 strutStyle: StrutStyle(
                   fontSize: widget.fontSize * _fontScale,
-                  height: 1.5,
+                  height: 1.1,
                 ),
               ), // RichText
             ), // Container
@@ -221,7 +220,6 @@ class BubbleShadowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // canvas.drawColor(Colors.transparent, BlendMode.src);
     canvas.drawShadow(buildPath(size, 15, isLeft), Colors.black87, 5.0, false);
   }
 
