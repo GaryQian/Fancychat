@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: Center(
         child: ListView.separated(
-          itemCount: 25,
+          itemCount: 1,
           padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
           itemBuilder: (BuildContext context, int index) {
             bool isLeft = index % 2 == 1;
@@ -228,4 +228,3 @@ class BubbleShadowPainter extends CustomPainter {
     return true;
   }
 }
-
