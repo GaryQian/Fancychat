@@ -96,7 +96,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
 
   Animation<double> animation;
   AnimationController controller;
-  RichText _richText;
+
   final GlobalKey _richTextKey = GlobalKey();
   TextSpan _textSpan;
   List<InlineSpan> _spans;
@@ -139,9 +139,9 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
 
     int spanIndex = 0;
     int characterIndex = 0;
-    if (_textSpan.text.length > tappedIndex) {
-      String before = _textSpan.text.substring(0, tappedIndex);
-      String after = _textSpan.text.substring(tappedIndex);
+    if (_text.length > tappedIndex) {
+      String before = _text.substring(0, tappedIndex);
+      String after = _text.substring(tappedIndex);
       print('before $before after $after');
       TextSpan newFirstSpan = TextSpan(
         text: after,
@@ -150,7 +150,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       _spans.insert(0, newFirstSpan);
       _text = before;
     } else {
-      int totalCharacterIndex = _textSpan.text.length;
+      int totalCharacterIndex = _text.length;
       for (InlineSpan span in _spans) {
         int characterIndexBeforeCounting = totalCharacterIndex;
         if (span is WidgetSpan) {
@@ -190,7 +190,9 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       TextSpan after = TextSpan(
           text: wholeSpan.text.substring(characterIndex),
           style: wholeSpan.style);
-      _spans.replaceRange(spanIndex, spanIndex + 1, [before, newSpan, after]);
+      _spans.replaceRange(spanIndex, spanIndex + 1, [before]);
+      _spans.insert(spanIndex + 1, newSpan);
+      _spans.insert(spanIndex + 2, after);
       _textFieldSpanIndex = spanIndex + 1;
     }
 
@@ -288,13 +290,12 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
           text: '您觉得如何？',
         ),
       ];
-      _strutStyle =
-          StrutStyle(fontSize: widget.fontSize * _fontScale, height: 1.1);
     }
+    _strutStyle =
+      StrutStyle(fontSize: widget.fontSize * _fontScale, height: 1.1);
     _textSpan = _buildTextSpan(_text, _spans);
-    _richText =
-        RichText(key: _richTextKey, text: _textSpan, strutStyle: _strutStyle);
-    return _richText;
+    RichText richText =  RichText(key: _richTextKey, text: _textSpan, strutStyle: _strutStyle);
+    return richText;
   }
 
   Widget build(BuildContext context) {
@@ -311,7 +312,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
             _richTextKey.currentContext.findRenderObject();
         setState(() {
           _tapToAddTextField(
-              renderBox.globalToLocal(details.globalPosition), context);
+            renderBox.globalToLocal(details.globalPosition), context);
         });
       },
       child: Transform.scale(
