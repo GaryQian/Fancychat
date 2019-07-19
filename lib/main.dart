@@ -195,33 +195,36 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
     int index = 0;
     // Reconstructing the remaining spans
     List<InlineSpan> newSpans = List();
-    TextStyle lastStyle;
-    InlineSpan lastSpan;
-    for (int i = index; i < _spans.length; i++) {
-      InlineSpan span = _spans[i];
-      if (index == _textFieldSpanIndex) {
-        span = TextSpan(text: textFieldText, style: textFieldSpanStyle);
-      }
-      if (span is TextSpan && lastSpan is TextSpan) {
-        TextSpan textSpan = span;
-        TextSpan lastTextSpan = lastSpan;
-        if (lastStyle == null || textSpan.style != lastStyle) {
-          newSpans.add(TextSpan(text: span.text, style: span.style, children: span.children));
-        } else {
-          _combineTextSpan(
-              lastTextSpan.text, textSpan.text, lastTextSpan.style);
-        }
+    for (int i = 0; i < _spans.length; i++) {
+      if (i == _textFieldSpanIndex) {
+        newSpans.add(TextSpan(text: textFieldText, style: textFieldSpanStyle));
       } else {
-        newSpans.add(span);
+        newSpans.add(_spans[i]);
       }
-      lastSpan = span;
     }
+    // TextStyle lastStyle;
+    // InlineSpan lastSpan;
+    // for (int i = index; i < _spans.length; i++) {
+    //   InlineSpan span = _spans[i];
+    //   if (index == _textFieldSpanIndex) {
+    //     span = TextSpan(text: textFieldText, style: textFieldSpanStyle);
+    //   }
+    //   if (span is TextSpan && lastSpan is TextSpan) {
+    //     TextSpan textSpan = span;
+    //     TextSpan lastTextSpan = lastSpan;
+    //     if (lastStyle == null || textSpan.style != lastStyle) {
+    //       newSpans.add(TextSpan(text: span.text, style: span.style, children: span.children));
+    //     } else {
+    //       _combineTextSpan(
+    //           lastTextSpan.text, textSpan.text, lastTextSpan.style);
+    //     }
+    //   } else {
+    //     newSpans.add(span);
+    //   }
+    //   lastSpan = span;
+    // }
     _spans = newSpans;
     return newSpans;
-  }
-
-  TextSpan _combineTextSpan(String a, String b, TextStyle style) {
-    return TextSpan(text: a + b, style: style);
   }
 
   TextSpan _buildTextSpan(List<InlineSpan> spans) {
