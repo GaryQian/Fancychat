@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'dart:ui' as ui;
 
 import 'gallery/app.dart';
 import 'bubble_helpers.dart';
@@ -162,12 +163,14 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       baseline: TextBaseline.alphabetic,
       child: Container(
         child: TextField(
-          style: selectedSpan.style?.copyWith(color: Colors.blue[600]),
+          controller: TextEditingController(text: selectedSpan.text.substring(characterIndex, characterIndex + 1)),
+          style: selectedSpan.style?.copyWith(color: Colors.blue[600]) ?? _textSpan.style.copyWith(color: Colors.blue[600]),
           onSubmitted: (String value) {
             setState(() {
               _reconstructSpans(value, selectedSpan.style);
             });
           },
+          decoration: InputDecoration(border:  InputBorder.none,),
         ),
         width: 50)
       );
@@ -181,7 +184,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
           text: wholeSpan.text.substring(0, characterIndex),
           style: wholeSpan.style);
       TextSpan after = TextSpan(
-          text: wholeSpan.text.substring(characterIndex),
+          text: wholeSpan.text.substring(characterIndex + 1),
           style: wholeSpan.style);
       _spans.replaceRange(spanIndex, spanIndex + 1, [before]);
       _spans.insert(spanIndex + 1, newSpan);
@@ -202,27 +205,6 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
         newSpans.add(_spans[i]);
       }
     }
-    // TextStyle lastStyle;
-    // InlineSpan lastSpan;
-    // for (int i = index; i < _spans.length; i++) {
-    //   InlineSpan span = _spans[i];
-    //   if (index == _textFieldSpanIndex) {
-    //     span = TextSpan(text: textFieldText, style: textFieldSpanStyle);
-    //   }
-    //   if (span is TextSpan && lastSpan is TextSpan) {
-    //     TextSpan textSpan = span;
-    //     TextSpan lastTextSpan = lastSpan;
-    //     if (lastStyle == null || textSpan.style != lastStyle) {
-    //       newSpans.add(TextSpan(text: span.text, style: span.style, children: span.children));
-    //     } else {
-    //       _combineTextSpan(
-    //           lastTextSpan.text, textSpan.text, lastTextSpan.style);
-    //     }
-    //   } else {
-    //     newSpans.add(span);
-    //   }
-    //   lastSpan = span;
-    // }
     _spans = newSpans;
     return newSpans;
   }
@@ -295,7 +277,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
               .clamp(widget.minScale, widget.maxScale);
         });
       },
-      onTapUp: (TapUpDetails details) {
+      onLongPressStart: (LongPressStartDetails details) {
         final RenderBox renderBox =
             _richTextKey.currentContext.findRenderObject();
         setState(() {
