@@ -100,7 +100,6 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
   final GlobalKey _richTextKey = GlobalKey();
   TextSpan _textSpan;
   List<InlineSpan> _spans;
-  String _text;
   StrutStyle _strutStyle;
   int _textFieldSpanIndex;
 
@@ -139,45 +138,39 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
 
     int spanIndex = 0;
     int characterIndex = 0;
-    if (_text.length > tappedIndex) {
-      String before = _text.substring(0, tappedIndex);
-      String after = _text.substring(tappedIndex);
-      print('before $before after $after');
-      TextSpan newFirstSpan = TextSpan(
-        text: after,
-        style: _textSpan.style,
-      );
-      _spans.insert(0, newFirstSpan);
-      _text = before;
-    } else {
-      int totalCharacterIndex = _text.length;
-      for (InlineSpan span in _spans) {
-        int characterIndexBeforeCounting = totalCharacterIndex;
-        if (span is WidgetSpan) {
-          totalCharacterIndex++;
+    int totalIndex = 0;
+    for (int index = 0; index < _spans.length; index++) {
+      InlineSpan span = _spans[index];
+      if (span is TextSpan) {
+        TextSpan textSpan = span;
+        if (totalIndex + span.text.length < tappedIndex) {
+          totalIndex += span.text.length;
         } else {
-          TextSpan textSpan = span as TextSpan;
-          totalCharacterIndex += textSpan.text.length;
+          characterIndex = tappedIndex - totalIndex;
+          spanIndex = index;
+          break;
         }
-        if (tappedIndex > totalCharacterIndex) {
-          spanIndex++;
-          continue;
-        }
-        characterIndex = tappedIndex - characterIndexBeforeCounting;
+      } else if (span is PlaceholderSpan) {
+        totalIndex++;
       }
     }
+
+
     InlineSpan selectedSpan = _spans[spanIndex];
     WidgetSpan newSpan = WidgetSpan(
-        child: Container(
-            child: TextField(
-              style: selectedSpan.style,
-              onSubmitted: (String value) {
-                setState(() {
-                  _reconstructSpans(value, selectedSpan.style);
-                });
-              },
-            ),
-            width: 100));
+      alignment: PlaceholderAlignment.baseline,
+      baseline: TextBaseline.alphabetic,
+      child: Container(
+        child: TextField(
+          style: selectedSpan.style?.copyWith(color: Colors.blue[600]),
+          onSubmitted: (String value) {
+            setState(() {
+              _reconstructSpans(value, selectedSpan.style);
+            });
+          },
+        ),
+        width: 50)
+      );
     if (characterIndex == 0 || selectedSpan is WidgetSpan) {
       // no need to split
       _spans.insert(spanIndex, newSpan);
@@ -195,23 +188,11 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       _spans.insert(spanIndex + 2, after);
       _textFieldSpanIndex = spanIndex + 1;
     }
-
-    print(_spans);
   }
 
-  void _reconstructSpans(String textFieldText, TextStyle textFieldSpanStyle) {
+  List<InlineSpan> _reconstructSpans(String textFieldText, TextStyle textFieldSpanStyle) {
     // Adding spans to main text
     int index = 0;
-    for (InlineSpan span in _spans) {
-      if (index == _textFieldSpanIndex) {
-        _text += textFieldText;
-      } else if (span is TextSpan && span.style == _textSpan.style) {
-        _text += span.text;
-      } else {
-        break;
-      }
-      index++;
-    }
     // Reconstructing the remaining spans
     List<InlineSpan> newSpans = List();
     TextStyle lastStyle;
@@ -225,7 +206,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
         TextSpan textSpan = span;
         TextSpan lastTextSpan = lastSpan;
         if (lastStyle == null || textSpan.style != lastStyle) {
-          newSpans.add(span);
+          newSpans.add(TextSpan(text: span.text, style: span.style, children: span.children));
         } else {
           _combineTextSpan(
               lastTextSpan.text, textSpan.text, lastTextSpan.style);
@@ -236,25 +217,26 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       lastSpan = span;
     }
     _spans = newSpans;
+    return newSpans;
   }
 
   TextSpan _combineTextSpan(String a, String b, TextStyle style) {
     return TextSpan(text: a + b, style: style);
   }
 
-  TextSpan _buildTextSpan(String text, List<InlineSpan> spans) {
+  TextSpan _buildTextSpan(List<InlineSpan> spans) {
     return TextSpan(
-        text: text,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: widget.fontSize * _fontScale,
-        ),
-        children: spans);
+      // text: text,
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: widget.fontSize * _fontScale,
+      ),
+      children: spans
+    );
   }
 
   Widget _createAndCacheRichText() {
-    if (_text == null || _spans == null) {
-      _text = '看！Flutter Gallery APP！';
+    if (_spans == null) {
       _spans = <InlineSpan>[
         // WidgetSpan(
         //   child: ClipRect(
@@ -265,6 +247,9 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
         //     ),
         //   ),
         // ), // WidgetSpan
+        TextSpan(
+          text: '看！Flutter Gallery APP！',
+        ),
         WidgetSpan(
           child: Image.asset(
             'assets/tears.gif',
@@ -293,9 +278,9 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
     }
     _strutStyle =
       StrutStyle(fontSize: widget.fontSize * _fontScale, height: 1.1);
-    _textSpan = _buildTextSpan(_text, _spans);
-    RichText richText =  RichText(key: _richTextKey, text: _textSpan, strutStyle: _strutStyle);
-    return richText;
+    _textSpan = _buildTextSpan(_spans);
+    print(_buildTextSpan(_spans));
+    return RichText(key: _richTextKey, text: _buildTextSpan(List<InlineSpan>.from(_spans)), strutStyle: _strutStyle);
   }
 
   Widget build(BuildContext context) {
