@@ -116,9 +116,11 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       });
   }
 
-  int _getTappedIndex(Offset offset, BuildContext context) {
-    TextPainter textPainter = TextPainter(text: _textSpan, strutStyle: _strutStyle);
-    final RenderBox renderBox = _richTextKey.currentContext.findRenderObject();
+  /// Builds a TextPainter with current state of the text.
+  TextPainter buildTextPainter(RenderBox renderBox) {
+    assert(renderBox != null);
+    TextPainter textPainter =
+    TextPainter(text: _textSpan, strutStyle: _strutStyle);
     final Size size = renderBox.size;
     textPainter.textDirection = TextDirection.ltr;
     textPainter.setPlaceholderDimensions(<PlaceholderDimensions>[
@@ -130,32 +132,20 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
           alignment: PlaceholderAlignment.bottom)
     ]);
     textPainter.layout(minWidth: size.width, maxWidth: size.width);
-    TextPosition position = textPainter.getPositionForOffset(offset);
-    return position.offset;
+    return textPainter;
   }
 
-  void _tapToAddTextField(Offset offset, BuildContext context) {
-    int tappedIndex = _getTappedIndex(offset, context);
+  void _tapToAddTextField(Offset offset, RenderBox renderBox) {
+    assert(offset != null);
+    assert(renderBox != null);
+    TextPainter textPainter = buildTextPainter(renderBox);
+    int tappedIndex = getTappedIndex(offset: offset, textPainter: textPainter);
 
-    int spanIndex = 0;
-    int characterIndex = 0;
-    int totalIndex = 0;
-    for (int index = 0; index < _spans.length; index++) {
-      InlineSpan span = _spans[index];
-      if (span is TextSpan) {
-        TextSpan textSpan = span;
-        if (totalIndex + span.text.length < tappedIndex) {
-          totalIndex += span.text.length;
-        } else {
-          characterIndex = tappedIndex - totalIndex;
-          spanIndex = index;
-          break;
-        }
-      } else if (span is PlaceholderSpan) {
-        totalIndex++;
-      }
-    }
-
+    TappedOffset tappedOffset = getTappedOffset(tappedIndex: tappedIndex, spans: _spans);
+    final int spanIndex = tappedOffset.spanIndex;
+    final int characterIndex = tappedOffset.characterIndex;
+    print('span index $spanIndex');
+    print('character index $characterIndex');
 
     InlineSpan selectedSpan = _spans[spanIndex];
     WidgetSpan newSpan = WidgetSpan(
@@ -163,7 +153,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       baseline: TextBaseline.alphabetic,
       child: Container(
         child: TextField(
-          controller: TextEditingController(text: selectedSpan.text.substring(characterIndex, characterIndex + 1)),
+          controller: TextEditingController(text: selectedSpan.text.substring(characterIndex, characterIndex+1)),
           style: selectedSpan.style?.copyWith(color: Colors.blue[600]) ?? _textSpan.style.copyWith(color: Colors.blue[600]),
           onSubmitted: (String value) {
             setState(() {
@@ -194,8 +184,6 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
   }
 
   List<InlineSpan> _reconstructSpans(String textFieldText, TextStyle textFieldSpanStyle) {
-    // Adding spans to main text
-    int index = 0;
     // Reconstructing the remaining spans
     List<InlineSpan> newSpans = List();
     for (int i = 0; i < _spans.length; i++) {
@@ -282,7 +270,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
             _richTextKey.currentContext.findRenderObject();
         setState(() {
           _tapToAddTextField(
-            renderBox.globalToLocal(details.globalPosition), context);
+            renderBox.globalToLocal(details.globalPosition), renderBox);
         });
       },
       child: Transform.scale(
