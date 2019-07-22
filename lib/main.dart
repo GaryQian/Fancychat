@@ -146,40 +146,23 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
     final int characterIndex = tappedOffset.characterIndex;
     print('span index $spanIndex');
     print('character index $characterIndex');
-
-    InlineSpan selectedSpan = _spans[spanIndex];
-    WidgetSpan newSpan = WidgetSpan(
-      alignment: PlaceholderAlignment.baseline,
-      baseline: TextBaseline.alphabetic,
-      child: Container(
-        child: TextField(
-          controller: TextEditingController(text: selectedSpan.text.substring(characterIndex, characterIndex+1)),
-          style: selectedSpan.style?.copyWith(color: Colors.blue[600]) ?? _textSpan.style.copyWith(color: Colors.blue[600]),
-          onSubmitted: (String value) {
-            setState(() {
-              _reconstructSpans(value, selectedSpan.style);
-            });
-          },
-          decoration: InputDecoration(border:  InputBorder.none,),
-        ),
-        width: 50)
-      );
-    if (characterIndex == 0 || selectedSpan is WidgetSpan) {
-      // no need to split
-      _spans.insert(spanIndex, newSpan);
-      _textFieldSpanIndex = 0;
-    } else {
-      TextSpan wholeSpan = selectedSpan as TextSpan;
-      TextSpan before = TextSpan(
-          text: wholeSpan.text.substring(0, characterIndex),
-          style: wholeSpan.style);
-      TextSpan after = TextSpan(
-          text: wholeSpan.text.substring(characterIndex + 1),
-          style: wholeSpan.style);
-      _spans.replaceRange(spanIndex, spanIndex + 1, [before]);
-      _spans.insert(spanIndex + 1, newSpan);
-      _spans.insert(spanIndex + 2, after);
+    assert(_spans[spanIndex] is TextSpan);
+    TextSpan selectedSpan = _spans[spanIndex];
+    WidgetSpan textFieldSpan = buildTextFieldSpan(text: selectedSpan.text.substring(characterIndex, characterIndex+1), style:selectedSpan.style?.copyWith(color: Colors.blue[600]) ?? _textSpan.style.copyWith(color: Colors.blue[600]), onSubmitted: (String value) {
+        setState(() {
+          _reconstructSpans(value, selectedSpan.style);
+        });
+      },);
+    List<InlineSpan> splitSpans = splitSpanIfNeeded(span: selectedSpan, characterIndex: characterIndex);
+    if (splitSpans.length == 2) {
+      splitSpans.insert(1, textFieldSpan);
+      _spans.removeAt(spanIndex);
+      _spans.insertAll(spanIndex, splitSpans);
       _textFieldSpanIndex = spanIndex + 1;
+    } else if (characterIndex >= selectedSpan.text.length-1) {
+      _textFieldSpanIndex = spanIndex + 1;
+    } else {
+      _textFieldSpanIndex = spanIndex;
     }
   }
 

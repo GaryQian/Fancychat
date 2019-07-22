@@ -57,6 +57,36 @@ TappedOffset getTappedOffset({@required int tappedIndex, @required List<InlineSp
   return TappedOffset(spanIndex: spanIndex, characterIndex: characterIndex);
 }
 
+WidgetSpan buildTextFieldSpan({String text, TextStyle style, ValueChanged<String> onSubmitted}){
+  return WidgetSpan(
+      alignment: PlaceholderAlignment.baseline,
+      baseline: TextBaseline.alphabetic,
+      child: Container(
+        child: TextField(
+          controller: TextEditingController(text: text),
+          style: style,
+          onSubmitted: onSubmitted,
+          decoration: InputDecoration(border:  InputBorder.none,),
+        ),
+        width: 50)
+      );
+}
+
+List<InlineSpan> splitSpanIfNeeded({InlineSpan span, int characterIndex}) {
+  assert(span != null && span is TextSpan);
+  TextSpan textSpan = span as TextSpan;
+  if (characterIndex == 0 || characterIndex >= textSpan.text.length-1) {
+    return [span];
+  }
+  TextSpan part1 = TextSpan(
+      text: span.text.substring(0, characterIndex),
+      style: span.style);
+  TextSpan part2 = TextSpan(
+      text: span.text.substring(characterIndex + 1),
+      style: span.style);
+  return [part1, part2];
+}
+
 /// Describe the where a tap is happened in a list of `InlineSpans`
 class TappedOffset {
   /// The index of the span that is tapped on.
