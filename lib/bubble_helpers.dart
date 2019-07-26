@@ -4,26 +4,13 @@
 
 import 'package:flutter/material.dart';
 
-Path buildPath(Size size, double radius, bool isLeft) {
-    Path path = Path();
-    path.moveTo(radius, 0);
-    path.lineTo(size.width - radius, 0);
-    path.quadraticBezierTo(
-        size.width, 0, size.width, radius);
-    if (isLeft) {
-      path.lineTo(size.width, size.height - radius);
-      path.quadraticBezierTo(
-        size.width, size.height, size.width - radius, size.height);
-      path.lineTo(0, size.height);
-    } else {
-      path.lineTo(size.width, size.height);
-      path.lineTo(radius, size.height);
-      path.quadraticBezierTo(
-        0, size.height, 0, size.height - radius);
-    }
-    path.lineTo(0, radius);
-    path.quadraticBezierTo(0, 0, radius, 0);
-    path.close();
-
-    return path;
+RRect buildRRect(Size size, double radius, bool isLeft) {
+  Radius bottomLeft = Radius.circular(isLeft ? 0 : radius);
+  Radius bottomRight = Radius.circular(isLeft ? radius : 0);
+  return RRect.fromRectAndCorners(
+      Rect.fromLTRB(0, 0, size.width, size.height),
+      topLeft: Radius.circular(radius),
+      topRight: Radius.circular(radius),
+      bottomLeft: bottomLeft,
+      bottomRight: bottomRight);
 }

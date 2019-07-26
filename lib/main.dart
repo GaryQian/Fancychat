@@ -122,7 +122,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
         alignment: Alignment(widget.isLeft ? -1 : 1, 0.5),
         child: CustomPaint(
           painter: BubbleShadowPainter(isLeft: widget.isLeft),
-          child: ClipPath(
+          child: ClipRRect(
             clipper: BubbleShaperClipper(isLeft: widget.isLeft),
             child: Container(
               width: widget.width,
@@ -176,16 +176,16 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
                       text: '您觉得如何？',
                     ),
                   ],
-                ), // TextSpan
+                ),
                 strutStyle: StrutStyle(
                   fontSize: widget.fontSize * _fontScale,
                   height: 1.1,
                 ),
-              ), // RichText
-            ), // Container
-          ), // ClipPath
-        ), // CustomPaint
-      ), // Transform
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -196,19 +196,19 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
   }
 }
 
-class BubbleShaperClipper extends CustomClipper<Path> {
+class BubbleShaperClipper extends CustomClipper<RRect> {
   BubbleShaperClipper({this.isLeft});
 
   final bool isLeft;
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
+  bool shouldReclip(CustomClipper<RRect> oldClipper) {
     return true;
   }
 
   @override
-  Path getClip(Size size) {
-    return buildPath(size, 15, isLeft);
+  RRect getClip(Size size) {
+    return buildRRect(size, 15, isLeft);
   }
 }
 
@@ -220,7 +220,7 @@ class BubbleShadowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawShadow(buildPath(size, 15, isLeft), Colors.black87, 5.0, false);
+    canvas.drawShadow(Path()..addRRect(buildRRect(size, 15, isLeft)), Colors.black87, 5.0, false);
   }
 
   @override
