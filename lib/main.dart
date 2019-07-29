@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
 import 'gallery/app.dart';
 
 void main() {
@@ -29,55 +29,55 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: Center(
-        child: ListView.separated(
-          itemCount: 1,
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
-          itemBuilder: (BuildContext context, int index) {
-            bool isLeft = index % 2 == 1;
-            List<Color> colors = isLeft
-                ? [Colors.grey[200], Colors.grey[350]]
-                : [Colors.lightGreenAccent[700], Colors.green[600]];
-            return Row(children: [
-              Spacer(flex: !isLeft ? 100 : 1),
-              InteractiveBubble(
-                maxWidth: 300,
-                fontSize: 20,
-                minScale: 0.5,
-                maxScale: 2.5,
-                gradientColors: colors,
-                isLeft: isLeft,
-                radius: 15,
+      body: FutureBuilder(
+          future: getResponse('responses/response.json'),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            return Center(
+              child: ListView.separated(
+                itemCount: snapshot.data.length,
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
+                itemBuilder: (BuildContext context, int index) {
+                  Map<String, dynamic> bubbleData =
+                      snapshot.data[index] as Map<String, dynamic>;
+                  bool isLeft = bubbleData["isLeft"];
+                  return Row(children: [
+                    Spacer(flex: !isLeft ? 100 : 1),
+                    InteractiveBubble(
+                      isLeft: isLeft,
+                      data: bubbleData,
+                    ),
+                    Spacer(flex: isLeft ? 100 : 1),
+                  ]);
+                },
+                separatorBuilder: (BuildContext context, int index) =>
+                    SizedBox(height: 35),
               ),
-              Spacer(flex: isLeft ? 100 : 1),
-            ]);
-          },
-          separatorBuilder: (BuildContext context, int index) =>
-              SizedBox(height: 35),
-        ),
-      ),
+            );
+          }),
     );
+  }
+
+  Future<List<dynamic>> getResponse(String assetName) async {
+    String data = await DefaultAssetBundle.of(context).loadString(assetName);
+    return jsonDecode(data);
   }
 }
 
 class InteractiveBubble extends StatefulWidget {
   InteractiveBubble({
-    this.maxWidth,
-    this.fontSize,
-    this.minScale,
-    this.maxScale,
-    this.gradientColors,
     this.isLeft,
-    this.radius,
+    this.data,
   });
 
-  final double maxWidth;
-  final double fontSize;
-  final double minScale;
-  final double maxScale;
-  final double radius;
+  final double minScale = 0.5;
+  final double maxScale = 2.5;
 
-  final List<Color> gradientColors;
+  final Map<String, dynamic> data;
+
   final bool isLeft;
 
   @override
@@ -91,21 +91,6 @@ class InteractiveBubbleState extends State<InteractiveBubble>
   double _fontScale = 1;
   double _startScale = 1;
 
-  Animation<double> animation;
-  AnimationController controller;
-
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    animation = Tween<double>(begin: 1, end: 1.15).animate(controller)
-      ..addListener(() {
-        setState(() {});
-      });
-  }
-
   Widget build(BuildContext context) {
     return GestureDetector(
       onScaleStart: (scaleDetails) => setState(() => _startScale = _fontScale),
@@ -115,88 +100,58 @@ class InteractiveBubbleState extends State<InteractiveBubble>
               .clamp(widget.minScale, widget.maxScale);
         });
       },
-      child: Bubble(
-        isLeft: widget.isLeft,
-        radius: widget.radius,
-        gradientColors: widget.gradientColors,
-        maxWidth: widget.maxWidth,
-        text: Text.rich(
-          TextSpan(
-            text: '看！Flutter Gallery APP！',
-            style: TextStyle(
-              fontSize: widget.fontSize * _fontScale,
-              color: Colors.black,
-            ),
-            children: <InlineSpan>[
-              // WidgetSpan(
-              //   child: ClipRect(
-              //     child: SizedBox(
-              //       width: 300,
-              //       height: 400,
-              //       child: GalleryApp()
-              //     ),
-              //   ),
-              // ), // WidgetSpan
-              WidgetSpan(
-                child: Image.asset(
-                  'assets/tears.gif',
-                  width: 25 * _fontScale,
-                  height: 25 * _fontScale,
-                ),
-              ), // WidgetSpan
-              WidgetSpan(
-                child: Image.asset(
-                  'assets/devil.gif',
-                  width: 25 * _fontScale,
-                  height: 25 * _fontScale,
-                ),
-              ), // WidgetSpan
-              TextSpan(
-                text: 'Strut让小字体的文字有更多的空间。',
-                style: TextStyle(
-                  fontSize: widget.fontSize * _fontScale / 2,
-                  color: Colors.black,
-                ),
-              ),
-              TextSpan(
-                text: '您觉得如何？',
-              ),
-            ],
-          ),
-          strutStyle: StrutStyle(
-            fontSize: widget.fontSize * _fontScale,
-            height: 1.1,
-          ),
-        ),
-      ),
+      child: BubbleBuilder().buildBubbleWithData(widget.data, _fontScale),
     );
   }
+}
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+class BubbleBuilder {
+  Bubble buildBubbleWithData(Map<String, dynamic> data, double scale) {
+    bool isLeft = data['isLeft'];
+    double strutFontSize = data['strutFontSize'];
+    List<InlineSpan> spans = [];
+    List<dynamic> spansData = data['spans'];
+    for (Map<String, dynamic> spanData in spansData) {
+      String type = spanData['type'];
+      switch (type) {
+        case 'text':
+          spans.add(TextSpan(
+              text: spanData['text'],
+              style: TextStyle(
+                  fontSize: spanData['fontSize'] * scale, color: Colors.black)));
+          break;
+        case 'image':
+          spans.add(WidgetSpan(
+              child: Image.asset(spanData['asset'],
+                  width: spanData['width'] * scale, height: spanData['height'] * scale)));
+          break;
+      }
+    }
+    Text text = Text.rich(
+      TextSpan(children: spans),
+      strutStyle: StrutStyle(fontSize: strutFontSize, height: 1.1),
+    );
+    return Bubble(isLeft: isLeft, text: text);
   }
 }
 
 class Bubble extends StatelessWidget {
-  Bubble(
-      {this.isLeft,
-      this.radius,
-      this.gradientColors,
-      this.maxWidth,
-      this.text});
+  Bubble({
+    this.isLeft,
+    this.text,
+  });
 
   final double padding = 15;
+  final double radius = 15;
 
   final bool isLeft;
-  final double radius;
-  final List<Color> gradientColors;
-  final double maxWidth;
   final Text text;
 
   @override
   Widget build(BuildContext context) {
+    List<Color> gradientColors = isLeft
+        ? [Colors.grey[200], Colors.grey[350]]
+        : [Colors.lightGreenAccent[700], Colors.green[600]];
     return CustomPaint(
       painter: BubbleShadowPainter(isLeft: isLeft, radius: radius),
       child: ClipRRect(
@@ -207,7 +162,7 @@ class Bubble extends StatelessWidget {
             bottomRight: isLeft ? Radius.circular(radius) : Radius.zero),
         child: Container(
           constraints: BoxConstraints(
-            maxWidth: maxWidth,
+            maxWidth: MediaQuery.of(context).size.width * 0.7,
           ),
           padding: EdgeInsets.all(padding),
           decoration: BoxDecoration(

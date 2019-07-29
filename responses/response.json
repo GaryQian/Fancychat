@@ -1,0 +1,35 @@
+[
+    {
+        "isLeft":false,
+        "strutFontSize":20.0,
+        "spans":[
+            {
+                "type":"text",
+                "text":"看！Flutter Gallery APP！",
+                "fontSize":20.0
+            },
+            {
+                "type":"image",
+                "width":25.0,
+                "height":25.0,
+                "asset":"assets/tears.gif"
+            },
+            {
+                "type":"image",
+                "width":25.0,
+                "height":25.0,
+                "asset":"assets/devil.gif"
+            },
+            {
+                "type":"text",
+                "text":"Strut让小字体的文字有更多的空间。",
+                "fontSize":10.0
+            },
+            {
+                "type":"text",
+                "text":"您觉得如何？",
+                "fontSize":20.0
+            }
+        ]
+    }
+]
