@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 
 import 'gallery/app.dart';
-import 'bubble_helpers.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -13,7 +12,7 @@ void main() {
       platform: TargetPlatform.iOS,
       fontFamily: 'PingFang SC',
     ),
-    home: MyHomePage(title: 'Flutter Demo Home Page'),
+    home: MyHomePage(title: 'Fancy Chat Bubble'),
   ));
 }
 
@@ -27,7 +26,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -37,58 +35,58 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
           itemBuilder: (BuildContext context, int index) {
             bool isLeft = index % 2 == 1;
-            List<Color> colors = isLeft ?
-              [Colors.grey[200], Colors.grey[350]] :
-              [Colors.lightGreenAccent[700], Colors.green[600]];
-            return Row(
-              children: [
-                Spacer(flex: !isLeft ? 100 : 1),
-                Bubble(
-                  width: 300,
-                  fontSize: 20,
-                  minScale: 0.5,
-                  maxScale: 2.5,
-                  gradientColors: colors,
-                  isLeft: isLeft,
-                ),
-                Spacer(flex: isLeft ? 100 : 1),
-              ]
-            );
+            List<Color> colors = isLeft
+                ? [Colors.grey[200], Colors.grey[350]]
+                : [Colors.lightGreenAccent[700], Colors.green[600]];
+            return Row(children: [
+              Spacer(flex: !isLeft ? 100 : 1),
+              InteractiveBubble(
+                maxWidth: 300,
+                fontSize: 20,
+                minScale: 0.5,
+                maxScale: 2.5,
+                gradientColors: colors,
+                isLeft: isLeft,
+                radius: 15,
+              ),
+              Spacer(flex: isLeft ? 100 : 1),
+            ]);
           },
-          separatorBuilder: (BuildContext context, int index) => SizedBox(height: 35),
+          separatorBuilder: (BuildContext context, int index) =>
+              SizedBox(height: 35),
         ),
       ),
     );
   }
 }
 
-class Bubble extends StatefulWidget {
-  Bubble({
-    this.width,
+class InteractiveBubble extends StatefulWidget {
+  InteractiveBubble({
+    this.maxWidth,
     this.fontSize,
     this.minScale,
     this.maxScale,
     this.gradientColors,
     this.isLeft,
+    this.radius,
   });
 
-  final double width;
-
+  final double maxWidth;
   final double fontSize;
   final double minScale;
   final double maxScale;
+  final double radius;
 
   final List<Color> gradientColors;
   final bool isLeft;
 
   @override
-  State<StatefulWidget> createState() {
-    return new BubbleState();
-  }
+  State<StatefulWidget> createState() => InteractiveBubbleState();
 }
 
-class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
-  BubbleState();
+class InteractiveBubbleState extends State<InteractiveBubble>
+    with SingleTickerProviderStateMixin {
+  InteractiveBubbleState();
 
   double _fontScale = 1;
   double _startScale = 1;
@@ -105,8 +103,7 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
     animation = Tween<double>(begin: 1, end: 1.15).animate(controller)
       ..addListener(() {
         setState(() {});
-      }
-    );
+      });
   }
 
   Widget build(BuildContext context) {
@@ -114,75 +111,61 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
       onScaleStart: (scaleDetails) => setState(() => _startScale = _fontScale),
       onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
         setState(() {
-          _fontScale = (scaleDetails.scale * _startScale).clamp(widget.minScale, widget.maxScale);
+          _fontScale = (scaleDetails.scale * _startScale)
+              .clamp(widget.minScale, widget.maxScale);
         });
       },
-      child: Transform.scale(
-        scale: animation.value,
-        alignment: Alignment(widget.isLeft ? -1 : 1, 0.5),
-        child: CustomPaint(
-          painter: BubbleShadowPainter(isLeft: widget.isLeft),
-          child: ClipRRect(
-            clipper: BubbleShaperClipper(isLeft: widget.isLeft),
-            child: Container(
-              width: widget.width,
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: widget.gradientColors,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomLeft,
-                ),
-              ),
-              child: Text.rich(
-                TextSpan(
-                  text: '看！Flutter Gallery APP！',
-                  style: TextStyle(
-                    fontSize: widget.fontSize * _fontScale,
-                    color: Colors.black,
-                  ),
-                  children: <InlineSpan>[
-                    // WidgetSpan(
-                    //   child: ClipRect(
-                    //     child: SizedBox(
-                    //       width: 300,
-                    //       height: 400,
-                    //       child: GalleryApp()
-                    //     ),
-                    //   ),
-                    // ), // WidgetSpan
-                    WidgetSpan(
-                      child: Image.asset(
-                        'assets/tears.gif',
-                        width: 25 * _fontScale,
-                        height: 25 * _fontScale,
-                      ),
-                    ), // WidgetSpan
-                    WidgetSpan(
-                      child: Image.asset(
-                        'assets/devil.gif',
-                        width: 25 * _fontScale,
-                        height: 25 * _fontScale,
-                      ),
-                    ), // WidgetSpan
-                    TextSpan(
-                      text: 'Strut让小字体的文字有更多的空间。',
-                      style: TextStyle(
-                        fontSize: widget.fontSize * _fontScale / 2,
-                        color: Colors.black,
-                      ),
-                    ),
-                    TextSpan(
-                      text: '您觉得如何？',
-                    ),
-                  ],
-                ),
-                strutStyle: StrutStyle(
-                  fontSize: widget.fontSize * _fontScale,
-                  height: 1.1,
-                ),
-              ),
+      child: Bubble(
+        isLeft: widget.isLeft,
+        radius: widget.radius,
+        gradientColors: widget.gradientColors,
+        maxWidth: widget.maxWidth,
+        text: Text.rich(
+          TextSpan(
+            text: '看！Flutter Gallery APP！',
+            style: TextStyle(
+              fontSize: widget.fontSize * _fontScale,
+              color: Colors.black,
             ),
+            children: <InlineSpan>[
+              // WidgetSpan(
+              //   child: ClipRect(
+              //     child: SizedBox(
+              //       width: 300,
+              //       height: 400,
+              //       child: GalleryApp()
+              //     ),
+              //   ),
+              // ), // WidgetSpan
+              WidgetSpan(
+                child: Image.asset(
+                  'assets/tears.gif',
+                  width: 25 * _fontScale,
+                  height: 25 * _fontScale,
+                ),
+              ), // WidgetSpan
+              WidgetSpan(
+                child: Image.asset(
+                  'assets/devil.gif',
+                  width: 25 * _fontScale,
+                  height: 25 * _fontScale,
+                ),
+              ), // WidgetSpan
+              TextSpan(
+                text: 'Strut让小字体的文字有更多的空间。',
+                style: TextStyle(
+                  fontSize: widget.fontSize * _fontScale / 2,
+                  color: Colors.black,
+                ),
+              ),
+              TextSpan(
+                text: '您觉得如何？',
+              ),
+            ],
+          ),
+          strutStyle: StrutStyle(
+            fontSize: widget.fontSize * _fontScale,
+            height: 1.1,
           ),
         ),
       ),
@@ -196,35 +179,76 @@ class BubbleState extends State<Bubble> with SingleTickerProviderStateMixin {
   }
 }
 
-class BubbleShaperClipper extends CustomClipper<RRect> {
-  BubbleShaperClipper({this.isLeft});
+class Bubble extends StatelessWidget {
+  Bubble(
+      {this.isLeft,
+      this.radius,
+      this.gradientColors,
+      this.maxWidth,
+      this.text});
+
+  final double padding = 15;
 
   final bool isLeft;
+  final double radius;
+  final List<Color> gradientColors;
+  final double maxWidth;
+  final Text text;
 
   @override
-  bool shouldReclip(CustomClipper<RRect> oldClipper) {
-    return true;
-  }
-
-  @override
-  RRect getClip(Size size) {
-    return buildRRect(size, 15, isLeft);
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: BubbleShadowPainter(isLeft: isLeft, radius: radius),
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(radius),
+            topRight: Radius.circular(radius),
+            bottomLeft: isLeft ? Radius.zero : Radius.circular(radius),
+            bottomRight: isLeft ? Radius.circular(radius) : Radius.zero),
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: maxWidth,
+          ),
+          padding: EdgeInsets.all(padding),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: gradientColors,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomLeft,
+            ),
+          ),
+          child: text,
+        ),
+      ),
+    );
   }
 }
 
 class BubbleShadowPainter extends CustomPainter {
+  BubbleShadowPainter({this.isLeft, this.radius});
 
-  BubbleShadowPainter({this.isLeft});
-
+  final double radius;
   final bool isLeft;
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawShadow(Path()..addRRect(buildRRect(size, 15, isLeft)), Colors.black87, 5.0, false);
+    canvas.drawShadow(Path()..addRRect(buildRRect(size, radius, isLeft)),
+        Colors.black87, 5.0, false);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
+  }
+
+  RRect buildRRect(Size size, double radius, bool isLeft) {
+    Radius bottomLeft = isLeft ? Radius.zero : Radius.circular(radius);
+    Radius bottomRight = isLeft ? Radius.circular(radius) : Radius.zero;
+    return RRect.fromRectAndCorners(
+        Rect.fromLTRB(0, 0, size.width, size.height),
+        topLeft: Radius.circular(radius),
+        topRight: Radius.circular(radius),
+        bottomLeft: bottomLeft,
+        bottomRight: bottomRight);
   }
 }
