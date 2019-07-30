@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'gallery/app.dart';
 
 const String emoji1 = "assets/devil.gif";
@@ -79,7 +78,7 @@ class _BubbleState extends State<Bubble> {
               topRight: Radius.circular(15),
               bottomLeft: Radius.circular(15)),
           child: Container(
-            constraints: BoxConstraints(maxWidth: 400),
+            constraints: BoxConstraints(maxWidth: 350),
             padding: EdgeInsets.all(15),
             decoration: BoxDecoration(
                 gradient: LinearGradient(
