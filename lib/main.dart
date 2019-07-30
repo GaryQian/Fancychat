@@ -74,17 +74,18 @@ class _BubbleState extends State<Bubble> {
         painter: BubbleShadowPainter(),
         child: ClipRRect(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-              bottomLeft: Radius.circular(15)),
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+            bottomLeft: Radius.circular(15)
+          ),
           child: Container(
             constraints: BoxConstraints(maxWidth: 350),
             padding: EdgeInsets.all(15),
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.lightGreenAccent[700], Colors.green[600]],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomLeft)),
+              gradient: LinearGradient(
+                colors: [Colors.lightGreenAccent[700], Colors.green[600]],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomLeft)),
             child: Text.rich(
               buildTextSpan(),
               strutStyle: StrutStyle(fontSize: _fontSize * _fontScale),
@@ -97,31 +98,37 @@ class _BubbleState extends State<Bubble> {
 
   TextSpan buildTextSpan() {
     return TextSpan(
-        style: TextStyle(
-            fontSize: _fontSize * _fontScale,
-            decoration: TextDecoration.underline,
-            decorationStyle: TextDecorationStyle.wavy,
-            decorationColor: Colors.red),
-        children: <InlineSpan>[
-          TextSpan(text: 'Hello everyone.\n'),
-          WidgetSpan(
-              child: Image.asset(
+      style: TextStyle(
+        fontSize: _fontSize * _fontScale,
+        decoration: TextDecoration.underline,
+        decorationStyle: TextDecorationStyle.wavy,
+        decorationColor: Colors.red,
+      ),
+      children: <InlineSpan>[
+        TextSpan(text: 'Hello everyone.\n'),
+        WidgetSpan(
+          child: Image.asset(
             emoji1,
             width: 25 * _fontScale,
             height: 25 * _fontScale,
-          )),
-          WidgetSpan(
-              child: Image.asset(
+          )
+        ),
+        WidgetSpan(
+          child: Image.asset(
             emoji2,
             width: 25 * _fontScale,
             height: 25 * _fontScale,
-          )),
-          TextSpan(
-              text: 'The small text\n',
-              style: TextStyle(fontSize: _fontSize / 2 * _fontScale)),
-          WidgetSpan(
-              child: SizedBox(width: 300, height: 400, child: GalleryApp())),
-        ]);
+          )
+        ),
+        TextSpan(
+          text: 'The small text\n',
+          style: TextStyle(fontSize: _fontSize / 2 * _fontScale),
+        ),
+        WidgetSpan(
+          child: SizedBox(width: 300, height: 400, child: GalleryApp()),
+        ),
+      ]
+    );
   }
 }
 
@@ -129,15 +136,19 @@ class BubbleShadowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawShadow(
-        Path()
-          ..addRRect(RRect.fromRectAndCorners(
-              Rect.fromLTWH(0, 0, size.width, size.height),
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-              bottomLeft: Radius.circular(15))),
-        Colors.black87,
-        5.0,
-        false);
+      Path()
+        ..addRRect(
+          RRect.fromRectAndCorners(
+            Rect.fromLTWH(0, 0, size.width, size.height),
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+            bottomLeft: Radius.circular(15)
+          )
+        ),
+      Colors.black87,
+      5.0,
+      false,
+    );
   }
 
   @override
