@@ -48,18 +48,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class Bubble extends StatefulWidget {
-  @override
-  _BubbleState createState() => _BubbleState();
-}
-
-class _BubbleState extends State<Bubble> {
-
+class Bubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-            constraints: BoxConstraints(maxWidth: 350),
-            child: Text('Some text'),
+      constraints: BoxConstraints(maxWidth: 350),
+      child: Text('Some text'),
     );
   }
 }
