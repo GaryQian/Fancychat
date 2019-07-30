@@ -54,94 +54,12 @@ class Bubble extends StatefulWidget {
 }
 
 class _BubbleState extends State<Bubble> {
-  final double _fontSize = 20;
-  double _fontScale = 1;
-  double _startScale = 1;
-  final double _minScale = 0.5;
-  final double _maxScale = 2.5;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onScaleStart: (ScaleStartDetails scaleDetails) {
-        setState(() => _startScale = _fontScale);
-      },
-      onScaleUpdate: (ScaleUpdateDetails scaleUpdateDetails) {
-        setState(() => _fontScale = (scaleUpdateDetails.scale * _startScale)
-            .clamp(_minScale, _maxScale));
-      },
-      child: CustomPaint(
-        painter: BubbleShadowPainter(),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-              bottomLeft: Radius.circular(15)),
-          child: Container(
+    return Container(
             constraints: BoxConstraints(maxWidth: 350),
-            padding: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.lightGreenAccent[700], Colors.green[600]],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomLeft)),
-            child: Text.rich(
-              buildTextSpan(),
-              strutStyle: StrutStyle(fontSize: _fontSize * _fontScale),
-            ),
-          ),
-        ),
-      ),
+            child: Text('Some text'),
     );
-  }
-
-  TextSpan buildTextSpan() {
-    return TextSpan(
-        style: TextStyle(
-            fontSize: _fontSize * _fontScale,
-            decoration: TextDecoration.underline,
-            decorationStyle: TextDecorationStyle.wavy,
-            decorationColor: Colors.red),
-        children: <InlineSpan>[
-          TextSpan(text: 'Hello everyone.\n'),
-          WidgetSpan(
-              child: Image.asset(
-            emoji1,
-            width: 25 * _fontScale,
-            height: 25 * _fontScale,
-          )),
-          WidgetSpan(
-              child: Image.asset(
-            emoji2,
-            width: 25 * _fontScale,
-            height: 25 * _fontScale,
-          )),
-          TextSpan(
-              text: 'The small text\n',
-              style: TextStyle(fontSize: _fontSize / 2 * _fontScale)),
-          WidgetSpan(
-              child: SizedBox(width: 300, height: 400, child: GalleryApp())),
-        ]);
-  }
-}
-
-class BubbleShadowPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawShadow(
-        Path()
-          ..addRRect(RRect.fromRectAndCorners(
-              Rect.fromLTWH(0, 0, size.width, size.height),
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-              bottomLeft: Radius.circular(15))),
-        Colors.black87,
-        5.0,
-        false);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
   }
 }
