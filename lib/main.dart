@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       separatorBuilder: (BuildContext context, int index) =>
           SizedBox(height: 35),
-    )));
+    )),);
   }
 }
 
@@ -90,10 +90,10 @@ class _BubbleState extends State<Bubble> {
               buildTextSpan(),
               strutStyle: StrutStyle(fontSize: _fontSize * _fontScale),
             ),
-          ), // Container
-        ), // ClipRRect
-      ), // CustomPaint
-    ); // GestureDetector
+          ),
+        ),
+      ),
+    );
   }
 
   TextSpan buildTextSpan() {
@@ -119,7 +119,7 @@ class _BubbleState extends State<Bubble> {
         ),
         TextSpan(text: '大家好,欢迎来到这个演示'),
         TextSpan(
-          text: 'misspelXed.\n'
+          text: 'misspelXed.\n',
           style: TextStyle(
             decoration: TextDecoration.underline,
             decorationStyle: TextDecorationStyle.wavy,
