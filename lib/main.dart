@@ -90,22 +90,27 @@ class _BubbleState extends State<Bubble> {
               buildTextSpan(),
               strutStyle: StrutStyle(fontSize: _fontSize * _fontScale),
             ),
-          ),
-        ),
-      ),
-    );
+          ), // Container
+        ), // ClipRRect
+      ), // CustomPaint
+    ); // GestureDetector
   }
 
   TextSpan buildTextSpan() {
     return TextSpan(
       style: TextStyle(
         fontSize: _fontSize * _fontScale,
-        decoration: TextDecoration.underline,
-        decorationStyle: TextDecorationStyle.wavy,
-        decorationColor: Colors.red,
       ),
       children: <InlineSpan>[
         TextSpan(text: 'Hello everyone.\n'),
+        TextSpan(
+          text: 'misspelXed.\n'
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+            decorationStyle: TextDecorationStyle.wavy,
+            decorationColor: Colors.red,
+          ),
+        ),
         WidgetSpan(
           child: Image.asset(
             emoji1,
