@@ -102,15 +102,7 @@ class _BubbleState extends State<Bubble> {
         fontSize: _fontSize * _fontScale,
       ),
       children: <InlineSpan>[
-        TextSpan(text: 'Hello everyone.\n'),
-        TextSpan(
-          text: 'misspelXed.\n'
-          style: TextStyle(
-            decoration: TextDecoration.underline,
-            decorationStyle: TextDecorationStyle.wavy,
-            decorationColor: Colors.red,
-          ),
-        ),
+        TextSpan(text: '大家好,欢迎来到这个演示'),
         WidgetSpan(
           child: Image.asset(
             emoji1,
@@ -124,6 +116,15 @@ class _BubbleState extends State<Bubble> {
             width: 25 * _fontScale,
             height: 25 * _fontScale,
           )
+        ),
+        TextSpan(text: '大家好,欢迎来到这个演示'),
+        TextSpan(
+          text: 'misspelXed.\n'
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+            decorationStyle: TextDecorationStyle.wavy,
+            decorationColor: Colors.red,
+          ),
         ),
         TextSpan(
           text: 'The small text\n',
