@@ -52,7 +52,7 @@ class Bubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(maxWidth: 350),
+      constraints: BoxConstraints(maxWidth: 330),
       child: Text('Some text'),
     );
   }
