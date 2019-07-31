@@ -5,8 +5,8 @@
 import 'package:flutter/material.dart';
 import 'gallery/app.dart';
 
-const String emoji1 = "assets/devil.gif";
-const String emoji2 = "assets/tears.gif";
+const String kEmoji1 = "assets/devil.gif";
+const String kEmoji2 = "assets/tears.gif";
 
 void main() {
   runApp(MaterialApp(
@@ -14,7 +14,7 @@ void main() {
       platform: TargetPlatform.iOS,
       fontFamily: 'PingFang SC',
     ),
-    home: MyHomePage(title: 'Fancy Chat Bubble'),
+    home: MyHomePage(title: '聊天气泡'),
   ));
 }
 
@@ -48,12 +48,87 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class Bubble extends StatelessWidget {
+class Bubble extends StatefulWidget {
+  @override
+  _BubbleState createState() => _BubbleState();
+}
+
+const double _defaultFontSize = 20;
+
+class _BubbleState extends State<Bubble> {
+  double _fontSize = _defaultFontSize;
+  double _startScale = 1;
+  double _fontScale = 1;
+
+  double get scaledFontSize {
+    return _fontSize * _fontScale;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(maxWidth: 330),
-      child: Text('Some text'),
+    return GestureDetector(
+      onScaleStart: (ScaleStartDetails scaleStartDetails) {
+        _startScale = _fontScale;
+      },
+      onScaleUpdate: (ScaleUpdateDetails scaleUpdateDetails) {
+        setState(() {
+          _fontScale = (scaleUpdateDetails.scale * _startScale).clamp(0.5, 2.5);
+          _fontSize = _defaultFontSize * _fontScale;
+        });
+      },
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 330),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.lightGreenAccent[700], Colors.green[500]],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomLeft,
+          ),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+            bottomLeft: Radius.circular(15),
+          ),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10,
+              offset: Offset(10, 10),
+              color: Colors.black38,
+            ),
+          ],
+        ),
+        padding: EdgeInsets.all(15),
+        child: Text.rich(
+          buildTextSpan(),
+          strutStyle: StrutStyle(fontSize: _fontSize),
+        ),
+      ),
+    );
+  }
+
+  TextSpan buildTextSpan() {
+    return TextSpan(
+      style: TextStyle(fontSize: _fontSize),
+      children: [
+        TextSpan(text: '欢迎大家加入我们的演示'),
+        WidgetSpan(
+            child: Image.asset(kEmoji1,
+                width: 25 * _fontScale, height: 25 * _fontScale)),
+        WidgetSpan(
+            child: Image.asset(kEmoji2,
+                width: 25 * _fontScale, height: 25 * _fontScale)),
+        TextSpan(
+            text: '欢迎大家加入我们的演示\n', style: TextStyle(fontSize: _fontSize / 2)),
+        WidgetSpan(
+          child: ClipRect(
+            child: SizedBox(
+              width: 300,
+              height: 500,
+              child: GalleryApp(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
