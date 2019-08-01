@@ -52,8 +52,27 @@ class Bubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20,
+              offset: Offset(10, 10),
+              color: Colors.black38,
+            ),
+          ],
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+            bottomLeft: Radius.circular(15),
+          ),
+          gradient: LinearGradient(
+            colors: [Colors.lightGreenAccent[700], Colors.green[500]],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomLeft,
+          )),
+      padding: EdgeInsets.all(15),
       constraints: BoxConstraints(maxWidth: 330),
-      child: Text('大家好，欢迎来到我们的演示'),
+      child: Text('大家好，欢迎来到我们的演示。'),
     );
   }
 }
