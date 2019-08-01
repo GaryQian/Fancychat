@@ -5,8 +5,8 @@
 import 'package:flutter/material.dart';
 import 'gallery/app.dart';
 
-const String emoji1 = "assets/devil.gif";
-const String emoji2 = "assets/tears.gif";
+const String kEmoji1 = "assets/devil.gif";
+const String kEmoji2 = "assets/tears.gif";
 
 void main() {
   runApp(MaterialApp(
@@ -14,7 +14,7 @@ void main() {
       platform: TargetPlatform.iOS,
       fontFamily: 'PingFang SC',
     ),
-    home: MyHomePage(title: 'Fancy Chat Bubble'),
+    home: MyHomePage(title: '聊天气泡'),
   ));
 }
 
@@ -53,7 +53,7 @@ class Bubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(maxWidth: 330),
-      child: Text('Some text'),
+      child: Text('大家好，欢迎来到我们的演示'),
     );
   }
 }
