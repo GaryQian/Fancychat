@@ -49,6 +49,9 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class Bubble extends StatelessWidget {
+
+  final double _fontSize = 20;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -72,7 +75,35 @@ class Bubble extends StatelessWidget {
           )),
       padding: EdgeInsets.all(15),
       constraints: BoxConstraints(maxWidth: 330),
-      child: Text('大家好，欢迎来到我们的演示。'),
+      child: Text.rich(
+        buildTextSpan(),
+        strutStyle: StrutStyle(
+          fontSize: _fontSize,
+        ),
+      ),
+    );
+
+  }
+
+  TextSpan buildTextSpan() {
+    return TextSpan(
+      style: TextStyle(fontSize: _fontSize),
+      children: [
+        TextSpan(text: '大家好，欢迎来到我们的演示。'),
+        TextSpan(
+          text: 'misspellXed\n',
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+            decorationStyle: TextDecorationStyle.wavy,
+            decorationColor: Colors.red,
+          ),
+        ),
+        TextSpan(
+          text: '这个文字很小\n',
+          style: TextStyle(fontSize: _fontSize / 2),
+        ),
+        TextSpan(text: '大家好，欢迎来到我们的演示。'),
+      ],
     );
   }
 }
