@@ -11,7 +11,6 @@ const String kEmoji2 = "assets/tears.gif";
 void main() {
   runApp(MaterialApp(
     theme: ThemeData(
-      platform: TargetPlatform.iOS,
       fontFamily: 'PingFang SC',
     ),
     home: MyHomePage(title: '聊天气泡'),
@@ -31,20 +30,61 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        body: Center(
+      appBar: AppBar(
+        title: Text('聊天气泡'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
             child: ListView.separated(
-      itemCount: 1,
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
-      itemBuilder: (BuildContext context, int index) {
-        return Row(children: [
-          Spacer(flex: 100),
-          Bubble(),
-          Spacer(flex: 1),
-        ]);
-      },
-      separatorBuilder: (BuildContext context, int index) =>
-          SizedBox(height: 35),
-    )));
+              itemCount: 1,
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
+              itemBuilder: (BuildContext context, int index) {
+                return Row(children: [
+                  Spacer(flex: 100),
+                  Bubble(),
+                  Spacer(flex: 1),
+                ]);
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  SizedBox(height: 35),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.white30, Colors.white54],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight)),
+            padding: EdgeInsets.fromLTRB(30, 8, 6, 18),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    child: TextField(
+                      decoration: InputDecoration(
+                          hintText: "说点什么。。。",
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue))),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 80,
+                  padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                  child: FlatButton(
+                    child: Icon(
+                      Icons.send,
+                      color: Colors.blue,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 
