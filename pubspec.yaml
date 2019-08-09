@@ -195,6 +195,7 @@ flutter:
     - assets/oh_yeah.png
     - assets/tears.gif
     - assets/devil.gif
+    - assets/flutter2.gif
 
   fonts:
     - family: Raleway
