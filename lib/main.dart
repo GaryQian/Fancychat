@@ -38,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Expanded(
             child: ListView.separated(
+              physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               itemCount: 1,
               padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
               itemBuilder: (BuildContext context, int index) {
