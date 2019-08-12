@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'bubble.dart';
 import 'gallery/app.dart';
 
 const String kEmoji1 = 'assets/devil.gif';
