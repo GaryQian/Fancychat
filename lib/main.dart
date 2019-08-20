@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Container(
                   width: 80,
-                  padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                   child: FlatButton(
                     child: Icon(
                       Icons.send,
@@ -87,16 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-    );
-  }
-}
-
-class Bubble extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(maxWidth: 330),
-      child: Text('大家好，欢迎来到我们的演示'),
     );
   }
 }
