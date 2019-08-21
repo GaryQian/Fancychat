@@ -4,11 +4,9 @@
 
 import 'package:flutter/material.dart';
 import 'bubble.dart';
-import 'gallery/app.dart';
 
 const String kEmoji1 = 'assets/devil.gif';
 const String kEmoji2 = 'assets/tears.gif';
-const String kFlutterLogo = 'assets/flutter2.gif';
 
 void main() {
   runApp(MaterialApp(

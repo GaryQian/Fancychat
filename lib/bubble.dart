@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'gallery/app.dart';
+
+const String kFlutterLogo = 'assets/flutter2.gif';
+
 
 class Bubble extends StatelessWidget {
   @override
